@@ -83,7 +83,39 @@ public class Consultas {
 		return retorno;
 	}
 	
-	public ArrayList getParadaProxima(String lat, String lgt){
-		ArrayList<String[]> paradas = r.readCsv("paradas.csv", ";");
+	public ArrayList getLinhas(String tipo){
+		Reader r = new Reader();
+
+		ArrayList<String[]> linhas = r.readCsv("linhas.csv", ";");
+		ArrayList<String[]> retorno = new ArrayList();
+		
+		//headers
+		retorno.add(linhas.get(0));
+		
+		//dados
+		switch(tipo){
+			case "onibus":
+				for(int i=0; i < linhas.size(); i++){
+					String[] aux = linhas.get(i);
+					if(aux[3].equals("\"O\"")){
+						retorno.add(linhas.get(i));
+					}
+				}
+			break;
+			case "lotacao":
+				for(int i=0; i < linhas.size(); i++){
+					String[] aux = linhas.get(i);
+					if(aux[3].equals("\"L\"")){
+						retorno.add(linhas.get(i));
+					}
+				}
+			break;
+		}
+		
+		return retorno;
 	}
+	
+	/*public ArrayList getParadaProxima(String lat, String lgt){
+		//ArrayList<String[]> paradas = r.readCsv("paradas.csv", ";");
+	}*/
 }
