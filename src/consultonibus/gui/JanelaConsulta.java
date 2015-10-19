@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import org.jxmapviewer.viewer.GeoPosition;
+import consultonibus.gui.TableLinhasModel;
 
 import consultaonibus.consultas.Consultas;
 
@@ -28,6 +29,8 @@ public class JanelaConsulta extends JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JPanel painelMapa;
+    private javax.swing.JTable tabelaLinhasOnibus;
+    private javax.swing.JTable tabelaLinhasLotacao;
 
     /**
      * Creates new form JanelaConsulta2
@@ -156,66 +159,105 @@ public class JanelaConsulta extends JFrame {
     private void showLinhas(java.awt.event.ActionEvent evt) {
     	javax.swing.JFrame janelaLinhas = new javax.swing.JFrame("Linhas");
     	javax.swing.JTabbedPane tabPaneLinhas = new javax.swing.JTabbedPane();
-    	
+    	javax.swing.JPanel panelLinhas = new javax.swing.JPanel();
+    	panelLinhas.setLayout(new javax.swing.BoxLayout(panelLinhas, javax.swing.BoxLayout.PAGE_AXIS));
+
     	tabPaneLinhas.addTab("Onibus", tabelaOnibus());
     	tabPaneLinhas.addTab("Lotação", tabelaLotacao());
     	
-    	janelaLinhas.add(tabPaneLinhas);
+    	
+    	panelLinhas.add(tabPaneLinhas);
+    	//panelLinhas.add(panelActions);
+    	
+    	janelaLinhas.add(panelLinhas);
     	
     	janelaLinhas.pack();
     	janelaLinhas.setVisible(true);
-
     }
     
     private javax.swing.JPanel tabelaOnibus(){
     	javax.swing.JPanel painel;
-    	javax.swing.JTable tabela;
     	javax.swing.JScrollPane barraRolagem;
+    	javax.swing.JPanel panelActions = new javax.swing.JPanel();
     	
-    	Consultas c = new Consultas();
-    	ArrayList<String[]> linhas = c.getLinhas("onibus");
-    	 
-    	String [] colunas = linhas.get(0);
-    	String [][] dados = new String[linhas.size()][5];
+    	javax.swing.JButton btnConsulta = new javax.swing.JButton();
+    	btnConsulta.setText("Consultar paradas");
+    	btnConsulta.setName("consultar_paradas_onibus");
+    	btnConsulta.addActionListener(new java.awt.event.ActionListener() {
+	        public void actionPerformed(java.awt.event.ActionEvent evt) {
+	            consultarParadas(evt, "onibus");
+	        }
+	    });
     	
-    	for(int i = 1; i < linhas.size(); i++){
-    		dados[i-1] = linhas.get(i);
-    	}
+    	panelActions.add(btnConsulta);
     	
     	painel = new javax.swing.JPanel(); 
-    	painel.setLayout(new BorderLayout()); 
-    	tabela = new javax.swing.JTable(dados, colunas); 
-    	tabela.setEnabled(false);
-    	barraRolagem = new javax.swing.JScrollPane(tabela); 
+    	//painel.setLayout(new BorderLayout());
+    	painel.setLayout(new javax.swing.BoxLayout(painel, javax.swing.BoxLayout.PAGE_AXIS));
+    	this.tabelaLinhasOnibus = new javax.swing.JTable(new TableLinhasModel("onibus")); 
+    	
+    	barraRolagem = new javax.swing.JScrollPane(tabelaLinhasOnibus); 
     	painel.add(barraRolagem); 
-    	getContentPane().add(painel, BorderLayout.CENTER);
+    	painel.add(panelActions);
+    	//getContentPane().add(painel, BorderLayout.CENTER);
 
     	return painel;
     }
     
     private javax.swing.JPanel tabelaLotacao(){
     	javax.swing.JPanel painel;
-    	javax.swing.JTable tabela;
     	javax.swing.JScrollPane barraRolagem;
+    	javax.swing.JPanel panelActions = new javax.swing.JPanel();
     	
-    	Consultas c = new Consultas();
-    	ArrayList<String[]> linhas = c.getLinhas("lotacao");
-    	 
-    	String [] colunas = linhas.get(0);
-    	String [][] dados = new String[linhas.size()][4];
+    	javax.swing.JButton btnConsulta = new javax.swing.JButton();
+    	btnConsulta.setText("Consultar paradas");
+    	btnConsulta.setName("consultar_paradas_lotacao");
+    	btnConsulta.addActionListener(new java.awt.event.ActionListener() {
+	        public void actionPerformed(java.awt.event.ActionEvent evt) {
+	            consultarParadas(evt, "lotacao");
+	        }
+	    });
     	
-    	for(int i = 1; i < linhas.size(); i++){
-    		dados[i-1] = linhas.get(i);
-    	}
+    	panelActions.add(btnConsulta);
     	
     	painel = new javax.swing.JPanel(); 
-    	painel.setLayout(new BorderLayout()); 
-    	tabela = new javax.swing.JTable(dados, colunas); 
-    	barraRolagem = new javax.swing.JScrollPane(tabela); 
+    	//painel.setLayout(new BorderLayout());
+    	painel.setLayout(new javax.swing.BoxLayout(painel, javax.swing.BoxLayout.PAGE_AXIS));
+    	this.tabelaLinhasLotacao = new javax.swing.JTable(new TableLinhasModel("lotacao")); 
+    	
+    	barraRolagem = new javax.swing.JScrollPane(tabelaLinhasLotacao); 
     	painel.add(barraRolagem); 
-    	getContentPane().add(painel, BorderLayout.CENTER);
+    	painel.add(panelActions);
+    	//getContentPane().add(painel, BorderLayout.CENTER);
 
     	return painel;
+    }
+    
+    private void consultarParadas(java.awt.event.ActionEvent evt, String tipo){
+    	String idLinha = "";
+    	if(tipo == "onibus"){
+    		if(this.tabelaLinhasOnibus.getSelectedRow() < 0){
+    	    	javax.swing.JOptionPane.showMessageDialog(null, "Selecione uma linha.");
+    		}else{
+		    	int row = this.tabelaLinhasOnibus.getSelectedRow();
+		    	idLinha = (String)this.tabelaLinhasOnibus.getValueAt(row, 0);
+    		}
+    	}else if(tipo == "lotacao"){
+    		if(this.tabelaLinhasLotacao.getSelectedRow() < 0){
+    	    	javax.swing.JOptionPane.showMessageDialog(null, "Selecione uma linha.");	
+    		}else{
+    			int row = this.tabelaLinhasLotacao.getSelectedRow();
+		    	idLinha = (String)this.tabelaLinhasLotacao.getValueAt(row, 0);
+    		}
+    	}
+    	
+    	Consultas c = new Consultas();
+    	ArrayList<String[]> paradas = c.getParadasByLinha(idLinha);
+    	if(paradas.size() == 0){
+    		javax.swing.JOptionPane.showMessageDialog(null, "Não foi encontrado paradas para esta linha.");
+    	}else{
+    		System.out.print(paradas);
+    	}
     }
     
     private void btnConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaActionPerformed

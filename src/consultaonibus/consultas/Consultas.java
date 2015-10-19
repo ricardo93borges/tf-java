@@ -37,6 +37,7 @@ public class Consultas {
 	}
 	
 	public ArrayList getParadasByLinha(String linha){
+		//System.out.print("linha: "+linha);
 		Reader r = new Reader();
 		ArrayList<String[]> paradasLinhas = r.readCsv("paradalinha.csv", ";");
 		ArrayList<String[]> paradas = r.readCsv("paradas.csv", ";");
@@ -46,7 +47,7 @@ public class Consultas {
 			String[] aux = paradasLinhas.get(i);
 
 			if(aux[0].equals(linha)){
-				System.out.println(aux[0]+"->"+aux[1]);
+				//System.out.println(aux[0]+"->"+aux[1]);
 				for(int j=0; j < paradas.size(); j++){
 					String[] aux2 = paradas.get(j);
 					if(aux2[0].equals(aux[1])){
