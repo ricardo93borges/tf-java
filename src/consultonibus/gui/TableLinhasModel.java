@@ -3,22 +3,23 @@ package consultonibus.gui;
 import java.util.ArrayList;
 
 import consultaonibus.consultas.Consultas;
+import consultaonibus.Linha;
 
 public class TableLinhasModel extends javax.swing.table.AbstractTableModel{
-	private String[] columnNames = {};
+	private String[] columnNames = {"ID", "Nome", "Codigo", "Tipo"};
 	private Object[][] data = {};
 	
 	public TableLinhasModel(String tipo){
 		super();
 		
 		Consultas c = new Consultas();
-    	ArrayList<String[]> linhas = c.getLinhas(tipo);
-    	 
-    	this.columnNames = linhas.get(0);
+    	ArrayList<Linha> linhas = c.getLinhas(tipo);
+    	
     	this.data = new String[linhas.size()][5];
     	
     	for(int i = 1; i < linhas.size(); i++){
-    		this.data[i-1] = linhas.get(i);
+    		String[] l = {linhas.get(i).getId(), linhas.get(i).getNome(), linhas.get(i).getCodigo(), linhas.get(i).getTipo(),};
+    		this.data[i-1] = l;
     	}
 	}
 	

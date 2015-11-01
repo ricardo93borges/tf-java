@@ -1,11 +1,10 @@
 package consultaonibus.consultas;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import consultaonibus.reader.Reader;
+import consultaonibus.Linha;
+import consultaonibus.Parada;
 
 public class Consultas {
 	
@@ -14,44 +13,43 @@ public class Consultas {
 		
 	}
 	
+	/*
+	 * retorna um ArrayList de objetos Linha
+	 */
 	public ArrayList getLinhasByParada(String parada){
 		Reader r = new Reader();
 		ArrayList<String[]> paradasLinhas = r.readCsv("paradalinha.csv", ";");
 		ArrayList<String[]> linhas = r.readCsv("linhas.csv", ";");
-		ArrayList<String[]> retorno = new ArrayList();
+		ArrayList<Linha> retorno = new ArrayList<Linha>();
 		
 		for(int i=0; i < paradasLinhas.size(); i++){
 			String[] aux = paradasLinhas.get(i);
-
 			if(aux[1].equals(parada)){
 				for(int j=0; j < linhas.size(); j++){
 					String[] aux2 = linhas.get(j);
 					if(aux2[0].equals(aux[0])){
-						retorno.add(aux2);
+						retorno.add(new Linha(aux2[0], aux2[1], aux2[2], aux2[3]));
 					}
 				}
 			}
 		}
-		
 		return retorno;
 	}
 	
 	public ArrayList getParadasByLinha(String linha){
-		//System.out.print("linha: "+linha);
 		Reader r = new Reader();
 		ArrayList<String[]> paradasLinhas = r.readCsv("paradalinha.csv", ";");
 		ArrayList<String[]> paradas = r.readCsv("paradas.csv", ";");
-		ArrayList<String[]> retorno = new ArrayList();
+		ArrayList<Parada> retorno = new ArrayList<Parada>();
 		
 		for(int i=0; i < paradasLinhas.size(); i++){
 			String[] aux = paradasLinhas.get(i);
 
 			if(aux[0].equals(linha)){
-				//System.out.println(aux[0]+"->"+aux[1]);
 				for(int j=0; j < paradas.size(); j++){
 					String[] aux2 = paradas.get(j);
 					if(aux2[0].equals(aux[1])){
-						retorno.add(aux2);
+						retorno.add(new Parada(aux2[0], aux2[1], aux2[2], aux2[3], aux2[4]));
 					}
 				}
 			}
@@ -64,7 +62,7 @@ public class Consultas {
 		Reader r = new Reader();
 		ArrayList<String[]> paradasLinhas = r.readCsv("paradalinha.csv", ";");
 		ArrayList<String[]> linhas = r.readCsv("linhas.csv", ";");
-		ArrayList<String[]> retorno = new ArrayList();
+		ArrayList<Linha> retorno = new ArrayList<Linha>();
 		
 		for(int i=0; i < paradasLinhas.size(); i++){
 			String[] aux = paradasLinhas.get(i);
@@ -74,7 +72,7 @@ public class Consultas {
 					for(int j=0; j < linhas.size(); j++){
 						String[] aux2 = linhas.get(j);
 						if(aux2[0].equals(aux[0])){
-							retorno.add(aux2);
+							retorno.add(new Linha(aux2[0], aux2[1], aux2[2], aux2[3]));
 						}
 					}
 				}
@@ -88,10 +86,7 @@ public class Consultas {
 		Reader r = new Reader();
 
 		ArrayList<String[]> linhas = r.readCsv("linhas.csv", ";");
-		ArrayList<String[]> retorno = new ArrayList();
-		
-		//headers
-		retorno.add(linhas.get(0));
+		ArrayList<Linha> retorno = new ArrayList<Linha>();
 		
 		//dados
 		switch(tipo){
@@ -99,7 +94,7 @@ public class Consultas {
 				for(int i=0; i < linhas.size(); i++){
 					String[] aux = linhas.get(i);
 					if(aux[3].equals("\"O\"")){
-						retorno.add(linhas.get(i));
+						retorno.add(new Linha(linhas.get(i)[0], linhas.get(i)[1], linhas.get(i)[2], linhas.get(i)[3]));
 					}
 				}
 			break;
@@ -107,7 +102,7 @@ public class Consultas {
 				for(int i=0; i < linhas.size(); i++){
 					String[] aux = linhas.get(i);
 					if(aux[3].equals("\"L\"")){
-						retorno.add(linhas.get(i));
+						retorno.add(new Linha(linhas.get(i)[0], linhas.get(i)[1], linhas.get(i)[2], linhas.get(i)[3]));
 					}
 				}
 			break;

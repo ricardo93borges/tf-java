@@ -14,6 +14,8 @@ import org.jxmapviewer.viewer.GeoPosition;
 import consultonibus.gui.TableLinhasModel;
 
 import consultaonibus.consultas.Consultas;
+import consultaonibus.Parada;
+import consultaonibus.Linha;
 
 /**
  *
@@ -252,7 +254,7 @@ public class JanelaConsulta extends JFrame {
     	}
     	
     	Consultas c = new Consultas();
-    	ArrayList<String[]> paradas = c.getParadasByLinha(idLinha);
+    	ArrayList<Parada> paradas = c.getParadasByLinha(idLinha);
     	if(paradas.size() == 0){
     		javax.swing.JOptionPane.showMessageDialog(null, "Não foi encontrado paradas para esta linha.");
     	}else{

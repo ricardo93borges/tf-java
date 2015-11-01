@@ -7,22 +7,31 @@ import java.util.Scanner;
 
 import consultaonibus.ConsultaOnibus;
 import consultaonibus.consultas.Consultas;
+import consultaonibus.Linha;
+import consultaonibus.Parada;
 
 public class Teste {
 	public static void main(String[] args){
-		
+		//getLinhasByParada("124");
+		getParadasByLinha("127621");
+	}
+	
+	public static void getLinhasByParada(String parada){
 		Consultas c = new Consultas();
-		//ArrayList<String[]> linhas  = c.getLinhasByParada("124");
-		//ArrayList<String[]> paradas = c.getParadasByLinha("128018");
-		ArrayList<String> pdas = new ArrayList();
-		pdas.add("124");
-		pdas.add("127");
-		pdas.add("129");
-		ArrayList<String[]> linhas2  = c.getLinhasByParadas(pdas);
+		ArrayList<Linha> linhas  = c.getLinhasByParada(parada);
 		
-		ArrayList<String[]> matriz = linhas2;
-		for(int i=0; i < matriz.size(); i++){
-			System.out.println(matriz.get(i)[0]+"|"+matriz.get(i)[1]);
+		for(int i=0; i < linhas.size(); i++){
+			System.out.println("\n Linha:");
+			System.out.println("ID: "+linhas.get(i).toString());
+		}
+	}
+	
+	public static void getParadasByLinha(String parada){
+		Consultas c = new Consultas();
+		ArrayList<Parada> paradas  = c.getParadasByLinha(parada);
+		for(int i=0; i < paradas.size(); i++){
+			System.out.println("\n Parada:");
+			System.out.println(paradas.get(i).toString());
 		}
 	}
 	
