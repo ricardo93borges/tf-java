@@ -1,5 +1,9 @@
 package consultaonibus;
 
+import java.util.ArrayList;
+
+import consultaonibus.reader.Reader;
+
 public class Parada {
 	
 	private String id;
@@ -55,7 +59,45 @@ public class Parada {
 	public void setTerminal(String terminal) {
 		this.terminal = terminal;
 	}
+	
+	public void addParada(){
+		Reader r = new Reader();
+		ArrayList conteudo = new ArrayList();
+		
+		conteudo.add(this.id);
+		conteudo.add(this.codigo);
+		conteudo.add(this.longitude);
+		conteudo.add(this.latitude);
+		conteudo.add(this.terminal);
 
+		r.writeCsv("paradas.csv", conteudo, ";");
+	}
+	
+	public void relacionaLinhaParada(String idLinha, String idParada){
+		Reader r = new Reader();
+		ArrayList conteudo = new ArrayList();
+		
+		conteudo.add(idLinha);
+		conteudo.add(idParada);
+
+		r.writeCsv("paradalinha.csv", conteudo, ";");
+	}
+
+	public static void ordenar(ArrayList<Parada> objetos){
+		Parada aux;
+		
+		objetos.remove(0);//remover headers
+		for(int i=0; i < objetos.size(); i ++){
+			for(int j=0; j < objetos.size()-1; j++){
+				if(Integer.parseInt(objetos.get(j).getId()) > Integer.parseInt(objetos.get(j+1).getId())){
+					aux = objetos.get(j);
+					objetos.set(j, objetos.get(j+1));
+					objetos.set(j+1, aux);
+				}
+			}
+		}
+	}
+	
 	@Override
 	public String toString() {
 		return "Parada [id=" + id + ", codigo=" + codigo + ", longitude="

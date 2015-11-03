@@ -50,8 +50,35 @@ public class Linha {
 		this.tipo = tipo;
 	}
 
+	public void addLinha(){
+		Reader r = new Reader();
+		ArrayList conteudo = new ArrayList();
+		
+		conteudo.add(this.id);
+		conteudo.add(this.nome);
+		conteudo.add(this.codigo);
+		conteudo.add(this.tipo);
+
+		r.writeCsv("linhas.csv", conteudo, ";");
+	}
+	
+	public static void ordenar(ArrayList<Linha> objetos){
+		Linha aux;
+		
+		objetos.remove(0);//remover headers
+		for(int i=0; i < objetos.size(); i ++){
+			for(int j=0; j < objetos.size()-1; j++){
+				if(Integer.parseInt(objetos.get(j).getId()) > Integer.parseInt(objetos.get(j+1).getId())){
+					aux = objetos.get(j);
+					objetos.set(j, objetos.get(j+1));
+					objetos.set(j+1, aux);
+				}
+			}
+		}
+	}
+	
 	@Override
 	public String toString() {
-		return "Linha [id=" + id + ", nome=" + nome + ", codigo=" + codigo + ", tipo=" + tipo + "]";
+		return this.nome;
 	}
 }

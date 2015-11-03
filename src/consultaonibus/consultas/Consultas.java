@@ -14,6 +14,22 @@ public class Consultas {
 	}
 	
 	/*
+	 * Retorna todas as linhas
+	 */
+	public ArrayList getLinhas(){
+		Reader r = new Reader();
+		ArrayList<String[]> linhas = r.readCsv("linhas.csv", ";");
+		ArrayList<Linha> retorno = new ArrayList<Linha>();
+		
+		for(int j=0; j < linhas.size(); j++){
+			String[] aux2 = linhas.get(j);
+			retorno.add(new Linha(aux2[0], aux2[1], aux2[2], aux2[3]));
+		}
+	
+		return retorno;
+	}
+	
+	/*
 	 * retorna um ArrayList de objetos Linha
 	 */
 	public ArrayList getLinhasByParada(String parada){
@@ -35,7 +51,23 @@ public class Consultas {
 		}
 		return retorno;
 	}
-	
+
+	/*
+	 * Retorna todas as paradas
+	 */
+	public ArrayList getParadas(){
+		Reader r = new Reader();
+		ArrayList<String[]> paradas = r.readCsv("paradas.csv", ";");
+		ArrayList<Parada> retorno = new ArrayList<Parada>();
+		
+		for(int j=0; j < paradas.size(); j++){
+			String[] aux2 = paradas.get(j);
+			retorno.add(new Parada(aux2[0], aux2[1], aux2[2], aux2[3], aux2[4]));
+		}
+		
+		return retorno;
+	}
+
 	public ArrayList getParadasByLinha(String linha){
 		Reader r = new Reader();
 		ArrayList<String[]> paradasLinhas = r.readCsv("paradalinha.csv", ";");
