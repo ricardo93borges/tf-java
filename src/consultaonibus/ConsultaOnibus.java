@@ -19,7 +19,7 @@ public class ConsultaOnibus {
     public static void main(String[] args) {
        
         
-        
+        System.out.println("RRUUUUUUUUUUUUUUUUUNNNNNNN");
         JanelaConsulta janela = new JanelaConsulta();
         janela.setVisible(true);
     }
