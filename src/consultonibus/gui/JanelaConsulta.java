@@ -9,16 +9,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.JFrame;
-import org.jxmapviewer.viewer.GeoPosition;
-import consultonibus.gui.TableLinhasModel;
 
-import consultaonibus.consultas.Consultas;
-import consultaonibus.Parada;
-import consultaonibus.Linha;
-import consultonibus.gui.JanelaLinhas;
+import org.jxmapviewer.viewer.GeoPosition;
 
 /**
  *
@@ -97,6 +91,11 @@ public class JanelaConsulta extends JFrame {
         //btnHistograma
         btnHistograma.setText("Histograma");
         btnHistograma.setName("histograma");
+        btnHistograma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showHistograma(evt);
+            }
+        });
         //btnAutores
         btnAutores.setText("Autores");
         btnAutores.setName("autores");
@@ -192,6 +191,10 @@ public class JanelaConsulta extends JFrame {
     
 	public void showLinhas(java.awt.event.ActionEvent evt){
 		JanelaLinhas linhas = new JanelaLinhas();
+	}
+	
+	public void showHistograma(java.awt.event.ActionEvent evt){
+		JanelaHistograma histograma = new JanelaHistograma();
 	}
     
     private void btnConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaActionPerformed
