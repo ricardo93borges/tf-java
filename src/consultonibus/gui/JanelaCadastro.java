@@ -7,7 +7,9 @@ import consultaonibus.consultas.Consultas;
 import consultaonibus.Parada;
 import consultaonibus.Linha;
 
-public class JanelaCadastro {
+import javax.swing.*;
+
+public class JanelaCadastro extends JFrame{
 	
 	private javax.swing.JTextField cadLinhaTextId;
     private javax.swing.JTextField cadLinhaTextNome;
@@ -21,15 +23,15 @@ public class JanelaCadastro {
     private javax.swing.JComboBox cadParadaComboLinha;
 	
 	 public JanelaCadastro() {
-	    	javax.swing.JFrame janelaCadastro = new javax.swing.JFrame("Cadastro");
-	    	javax.swing.JTabbedPane tabPaneCadastro = new javax.swing.JTabbedPane();
-	    	janelaCadastro.setSize(400, 450);
+		 javax.swing.JTabbedPane tabPaneCadastro = new javax.swing.JTabbedPane();
+		 this.setSize(400, 450);
+		 this.setTitle("Cadastro");
 
-	    	tabPaneCadastro.addTab("Linha", initCadastroLinhaTab());
-	    	tabPaneCadastro.addTab("Parada", initCadastroParadaTab());
-	    	
-	    	janelaCadastro.add(tabPaneCadastro);
-	    	janelaCadastro.setVisible(true);
+	     tabPaneCadastro.addTab("Linha", initCadastroLinhaTab());
+		 tabPaneCadastro.addTab("Parada", initCadastroParadaTab());
+
+		 this.add(tabPaneCadastro);
+		 this.setVisible(true);
 	 }
 
 	/*

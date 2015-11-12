@@ -93,10 +93,12 @@ public class GerenciadorMapa {
 
                 // Obtém a cor do waypoint
                 Color cor = wp.getColor();
+               // System.out.println(wp.getColor().toString());
                 // Normaliza os valores entre 0 (mínimo) e 1 (máximo)
                 float fator = (float) ((wp.getValue() - valorMenor) / (valorMaior - valorMenor));
                 // Seta a opacidade da cor usando o fator de importância calculado (0=mínimo,1=máximo)
-                g.setColor(new Color(cor.getRed() / 255.0f, cor.getGreen() / 255.0f, cor.getBlue() / 255.0f, fator));
+                //g.setColor(new Color(cor.getRed() / 255.0f, cor.getGreen() / 255.0f, cor.getBlue() / 255.0f, fator));
+                g.setColor(new Color(cor.getRed(), cor.getGreen(), cor.getBlue()));
                 g.fill(new Ellipse2D.Float(x - 3, y - 3, 6, 6));
             }
         });

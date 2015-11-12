@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import consultaonibus.reader.Reader;
 import consultaonibus.Linha;
 import consultaonibus.Parada;
+import consultaonibus.ParadaLinha;
 
 public class Consultas {
 	
@@ -65,6 +66,22 @@ public class Consultas {
 			retorno.add(new Parada(aux2[0], aux2[1], aux2[2], aux2[3], aux2[4]));
 		}
 		
+		return retorno;
+	}
+
+	/*
+	 * Retorna todas as paradas
+	 */
+	public ArrayList getParadaLinha(){
+		Reader r = new Reader();
+		ArrayList<String[]> paradaLinhas = r.readCsv("paradalinha.csv", ";");
+		ArrayList<ParadaLinha> retorno = new ArrayList<>();
+
+		for(int j=0; j < paradaLinhas.size(); j++){
+			String[] aux2 = paradaLinhas.get(j);
+			retorno.add(new ParadaLinha(aux2[0], aux2[1]));
+		}
+
 		return retorno;
 	}
 

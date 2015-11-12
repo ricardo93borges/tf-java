@@ -7,11 +7,16 @@ package consultonibus.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
 
+import consultaonibus.Parada;
+import consultaonibus.consultas.Consultas;
+import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 
 /**
@@ -47,11 +52,45 @@ public class JanelaConsulta extends JFrame {
 
         painelMapa.setLayout(new BorderLayout());
         painelMapa.add(gerenciador.getMapKit(), BorderLayout.CENTER);
-         
+
+        this.showPontos();
+
         this.setSize(800, 600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
+
     }
+
+    public String substituir(String str, String oldChar, String newChar){
+        if(str.contains(oldChar)){
+            str = str.replace(oldChar, newChar);
+        }
+        return str;
+    }
+
+    public void showPontos(){
+        Consultas c = new Consultas();
+        ArrayList<Parada> paradas = c.getParadas();
+        List<MyWaypoint> pontos = new ArrayList<MyWaypoint>();
+
+        for(int i=1; i<paradas.size(); i++) {
+            //System.out.println(paradas.get(i).getLatitude());
+            String latStr = this.substituir(paradas.get(i).getLatitude(), ",", ".");
+            String lngStr = this.substituir(paradas.get(i).getLongitude(), ",", ".");
+
+            double lat = Double.parseDouble(latStr);
+            double lng = Double.parseDouble(lngStr);
+
+            //Color color = new Color(0, 0, 0);
+            GeoPosition coord = new GeoPosition(lat, lng);
+            MyWaypoint wp = new MyWaypoint(Color.BLUE, 2.0, coord);
+            pontos.add(wp);
+        }
+
+        gerenciador.setPontos(pontos);
+
+    }
+
 
     /*
      * Inicializa janela principal

@@ -6,12 +6,14 @@ import consultaonibus.consultas.Consultas;
 import consultaonibus.Parada;
 import consultaonibus.Linha;
 
-public class JanelaLinhas {
+import javax.swing.*;
+
+public class JanelaLinhas extends JFrame{
 	private javax.swing.JTable tabelaLinhasOnibus;
     private javax.swing.JTable tabelaLinhasLotacao;
 	
 	public JanelaLinhas(){
-		javax.swing.JFrame janelaLinhas = new javax.swing.JFrame("Linhas");
+		this.setTitle("Linhas");
 		javax.swing.JTabbedPane tabPaneLinhas = new javax.swing.JTabbedPane();
 		javax.swing.JPanel panelLinhas = new javax.swing.JPanel();
 
@@ -21,10 +23,10 @@ public class JanelaLinhas {
     	tabPaneLinhas.addTab("Lotação", tabelaLotacao());
     	
     	panelLinhas.add(tabPaneLinhas);
-    	janelaLinhas.add(panelLinhas);
-    	
-    	janelaLinhas.pack();
-    	janelaLinhas.setVisible(true);
+    	this.add(panelLinhas);
+
+		this.pack();
+		this.setVisible(true);
 
 	}
 	
