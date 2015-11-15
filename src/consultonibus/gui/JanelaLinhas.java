@@ -1,18 +1,25 @@
 package consultonibus.gui;
 
+import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
+import consultaonibus.Util;
 import consultaonibus.consultas.Consultas;
 import consultaonibus.Parada;
 import consultaonibus.Linha;
+import org.jxmapviewer.viewer.GeoPosition;
 
 import javax.swing.*;
 
 public class JanelaLinhas extends JFrame{
 	private javax.swing.JTable tabelaLinhasOnibus;
     private javax.swing.JTable tabelaLinhasLotacao;
+	private GerenciadorMapa gerenciador;
 	
-	public JanelaLinhas(){
+	public JanelaLinhas(GerenciadorMapa gerenciador){
+		this.gerenciador = gerenciador;
+		this.gerenciador.resetWaypoints();
 		this.setTitle("Linhas");
 		javax.swing.JTabbedPane tabPaneLinhas = new javax.swing.JTabbedPane();
 		javax.swing.JPanel panelLinhas = new javax.swing.JPanel();
@@ -121,6 +128,17 @@ public class JanelaLinhas extends JFrame{
     		javax.swing.JOptionPane.showMessageDialog(null, "Não foi encontrado paradas para esta linha.");
     	}else{
     		System.out.print(paradas);
-    	}
+
+			for(int i=0; i< paradas.size(); i++){
+				for(MyWaypoint wp : gerenciador.getPontos()){
+					if(paradas.get(i).getId().equals(wp.getParada().getId())){
+						wp.setColor(Color.GREEN);
+					}
+				}
+			}
+
+			gerenciador.getMapKit().repaint();
+			this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+		}
     }
 }

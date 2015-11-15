@@ -225,9 +225,9 @@ public class JanelaConsulta extends JFrame {
 	}
     
 	public void showLinhas(java.awt.event.ActionEvent evt){
-		JanelaLinhas linhas = new JanelaLinhas();
+		JanelaLinhas linhas = new JanelaLinhas(gerenciador);
 	}
-	
+
 	public void showHistograma(java.awt.event.ActionEvent evt){
 		JanelaHistograma histograma = new JanelaHistograma();
 	}

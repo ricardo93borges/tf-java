@@ -40,6 +40,8 @@ public class GerenciadorMapa {
     private Color corMenor;
     private Color corMaior;
 
+    private GeoPosition clickGeoPosition;
+
     private double valorMenor;
     private double valorMaior;
 
@@ -49,6 +51,14 @@ public class GerenciadorMapa {
 
         OpenStreetMap, VirtualEarth
     };
+
+    public GeoPosition getClickGeoPosition() {
+        return clickGeoPosition;
+    }
+
+    public void setClickGeoPosition(GeoPosition clickGeoPosition) {
+        this.clickGeoPosition = clickGeoPosition;
+    }
 
     public Set<MyWaypoint> getPontos() {
         return pontos;
@@ -216,24 +226,16 @@ public class GerenciadorMapa {
         }
 
         @Override
-        public void mousePressed(MouseEvent e) {
+        public void mouseClicked(MouseEvent e) {
             JXMapViewer mapa = gerenciador.getMapKit().getMainMap();
-
-
             GeoPosition loc = mapa.convertPointToGeoPosition(e.getPoint());
-
             System.out.println(loc.getLatitude()+", "+loc.getLongitude());
             lastButton = e.getButton();
-            // Botão 3: seleciona localização
-            if (lastButton == MouseEvent.BUTTON3) {
-                gerenciador.setSelecaoCentro(loc);
-                gerenciador.setSelecaoBorda(loc);
-                //gerenciador.getMapKit().setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-                gerenciador.getMapKit().repaint();
-            }
+            //Parada próxima
             if (lastButton == MouseEvent.BUTTON1) {
 
                 GeoPosition gp = new GeoPosition(loc.getLatitude(), loc.getLongitude());
+
                 Consultas c = new Consultas();
 
                 MyWaypoint waypoint = c.getParadaProxima(gp, gerenciador.pontos, mapa);
@@ -250,14 +252,32 @@ public class GerenciadorMapa {
                 for(MyWaypoint ponto : gerenciador.pontos){
                     listWp.add(ponto);
                 }
-
-                //Adiciona os novos pontos no mapa
+                //Atualizar mapa
                 gerenciador.setPontos(listWp);
                 //Redesenha o mapa
                 gerenciador.getMapKit().repaint();
 
+
                 //Abre a janela Parada
                 JanelaParada jp = new JanelaParada(waypoint.getParada());
+
+            }
+        }
+        @Override
+        public void mousePressed(MouseEvent e) {
+            JXMapViewer mapa = gerenciador.getMapKit().getMainMap();
+
+
+            GeoPosition loc = mapa.convertPointToGeoPosition(e.getPoint());
+
+            System.out.println(loc.getLatitude()+", "+loc.getLongitude());
+            lastButton = e.getButton();
+            // Botão 3: seleciona localização
+            if (lastButton == MouseEvent.BUTTON3) {
+                gerenciador.setSelecaoCentro(loc);
+                gerenciador.setSelecaoBorda(loc);
+                //gerenciador.getMapKit().setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+                gerenciador.getMapKit().repaint();
             }
 
         }
@@ -273,6 +293,13 @@ public class GerenciadorMapa {
             }
         }
 
+    }
+
+    public void resetWaypoints(){
+        for(MyWaypoint ponto : this.pontos){
+            ponto.setColor(Color.BLUE);
+        }
+        this.getMapKit().repaint();
     }
 
 }
