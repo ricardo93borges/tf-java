@@ -1,11 +1,19 @@
 package consultaonibus.consultas;
 
-import java.util.ArrayList;
+import java.awt.*;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Point2D;
+import java.util.*;
 
+import consultaonibus.Util;
 import consultaonibus.reader.Reader;
 import consultaonibus.Linha;
 import consultaonibus.Parada;
 import consultaonibus.ParadaLinha;
+import consultonibus.gui.MyWaypoint;
+import org.jxmapviewer.JXMapViewer;
+import org.jxmapviewer.viewer.GeoPosition;
+import org.jxmapviewer.viewer.Waypoint;
 
 public class Consultas {
 	
@@ -159,8 +167,40 @@ public class Consultas {
 		
 		return retorno;
 	}
-	
-	/*public ArrayList getParadaProxima(String lat, String lgt){
-		//ArrayList<String[]> paradas = r.readCsv("paradas.csv", ";");
-	}*/
+
+	public MyWaypoint getParadaProxima(GeoPosition gp, Set<MyWaypoint> waypoints, JXMapViewer mapa){
+		//Converte o ponto clicado para um objeto com coordenadas em pixel
+		Point2D pointClicked = mapa.getTileFactory().geoToPixel(gp, mapa.getZoom());
+		MyWaypoint pontoProx = null;
+		double menorX = 0;
+		double menorY = 0;
+
+		//Inicia as variaveis
+		for(MyWaypoint ponto : waypoints){
+			Point2D pointWp = mapa.getTileFactory().geoToPixel(ponto.getPosition(), mapa.getZoom());
+			menorX = Math.abs(pointClicked.getX()-pointWp.getX());
+			menorY = Math.abs(pointClicked.getY()-pointWp.getY());
+			break;
+		}
+
+		//System.out.println("Menor X inicial:"+menorX);
+		//System.out.println("Menor Y inicial:"+menorY);
+
+		//Busca pelo waypoint mais proximo do ponto clicado
+		for(MyWaypoint ponto : waypoints){
+			Point2D pointWp = mapa.getTileFactory().geoToPixel(ponto.getPosition(), mapa.getZoom());
+			double calcX = Math.abs(pointClicked.getX()-pointWp.getX());
+			double calcY = Math.abs(pointClicked.getY()-pointWp.getY());
+			if(calcX < menorX && calcY < menorY){
+				menorX = calcX;
+				menorY = calcY;
+				//System.out.println("calcX:"+calcX);
+				//System.out.println("calcX:"+calcY);
+				pontoProx = ponto;
+			}
+		}
+
+		return pontoProx;
+	}
+
 }

@@ -2,6 +2,7 @@ package consultonibus.gui;
 
 import java.awt.Color;
 
+import consultaonibus.Parada;
 import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
 
@@ -12,8 +13,9 @@ import org.jxmapviewer.viewer.GeoPosition;
  */
 public class MyWaypoint extends DefaultWaypoint {
 
-    private final Color color;
+    private Color color;
     private double value;
+    private Parada parada;
 
     /**
      * @param color a cor
@@ -32,7 +34,21 @@ public class MyWaypoint extends DefaultWaypoint {
         return color;
     }
 
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
     public double getValue() {
         return value;
     }
+
+    public Parada getParada() {
+        return parada;
+    }
+
+    public void setParada(Parada parada) {
+        this.parada = parada;
+    }
+
+
 }

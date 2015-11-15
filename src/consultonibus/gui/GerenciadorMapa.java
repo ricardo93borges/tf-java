@@ -1,5 +1,6 @@
 package consultonibus.gui;
 
+import consultaonibus.Parada;
 import consultaonibus.consultas.AlgoritmosGeograficos;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -8,21 +9,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import consultaonibus.consultas.Consultas;
 import org.jxmapviewer.JXMapKit;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.VirtualEarthTileFactoryInfo;
 import org.jxmapviewer.painter.CompoundPainter;
 import org.jxmapviewer.painter.Painter;
-import org.jxmapviewer.viewer.DefaultTileFactory;
-import org.jxmapviewer.viewer.GeoPosition;
-import org.jxmapviewer.viewer.TileFactoryInfo;
-import org.jxmapviewer.viewer.WaypointPainter;
-import org.jxmapviewer.viewer.WaypointRenderer;
+import org.jxmapviewer.viewer.*;
 
 /**
  * Classe para gerenciar um mapa
@@ -44,17 +43,27 @@ public class GerenciadorMapa {
     private double valorMenor;
     private double valorMaior;
 
+    private Set<MyWaypoint> pontos;
+
     public enum FonteImagens {
 
         OpenStreetMap, VirtualEarth
     };
 
+    public Set<MyWaypoint> getPontos() {
+        return pontos;
+    }
+
+    public void setPontos(Set<MyWaypoint> pontos) {
+        this.pontos = pontos;
+    }
+
     /*
-     * Cria um gerenciador de mapas, a partir de uma posição e uma fonte de imagens
-     * 
-     * @param centro centro do mapa
-     * @param fonte fonte das imagens (FonteImagens.OpenStreetMap ou FonteImagens.VirtualEarth)
-     */
+             * Cria um gerenciador de mapas, a partir de uma posição e uma fonte de imagens
+             *
+             * @param centro centro do mapa
+             * @param fonte fonte das imagens (FonteImagens.OpenStreetMap ou FonteImagens.VirtualEarth)
+             */
     public GerenciadorMapa(GeoPosition centro, FonteImagens fonte) {
         jXMapKit = new JXMapKit();
         TileFactoryInfo info = null;
@@ -76,6 +85,15 @@ public class GerenciadorMapa {
         // Indicando que não desejamos ver um marcador nessa posição
         jXMapKit.setAddressLocationShown(false);
 
+
+        CompoundPainter cp = drawMap();
+        jXMapKit.getMainMap().setOverlayPainter(cp);
+
+        selCentro = null;
+        selBorda = null;
+    }
+
+    public CompoundPainter drawMap(){
         // Criando um objeto para "pintar" os pontos
         pontosPainter = new WaypointPainter<MyWaypoint>();
 
@@ -85,7 +103,7 @@ public class GerenciadorMapa {
             @Override
             public void paintWaypoint(Graphics2D g, JXMapViewer viewer, MyWaypoint wp) {
 
-                // Desenha cada waypoint como um pequeno círculo            	
+                // Desenha cada waypoint como um pequeno círculo
                 Point2D point = viewer.getTileFactory().geoToPixel(wp.getPosition(), viewer.getZoom());
                 int x = (int) point.getX();
                 int y = (int) point.getY();
@@ -93,7 +111,7 @@ public class GerenciadorMapa {
 
                 // Obtém a cor do waypoint
                 Color cor = wp.getColor();
-               // System.out.println(wp.getColor().toString());
+                // System.out.println(wp.getColor().toString());
                 // Normaliza os valores entre 0 (mínimo) e 1 (máximo)
                 float fator = (float) ((wp.getValue() - valorMenor) / (valorMaior - valorMenor));
                 // Seta a opacidade da cor usando o fator de importância calculado (0=mínimo,1=máximo)
@@ -134,10 +152,7 @@ public class GerenciadorMapa {
         CompoundPainter cp = new CompoundPainter();
         cp.setPainters(pontosPainter, guiPainter);
 
-        jXMapKit.getMainMap().setOverlayPainter(cp);
-
-        selCentro = null;
-        selBorda = null;
+        return cp;
     }
 
     /*
@@ -178,7 +193,7 @@ public class GerenciadorMapa {
      */
     public void setPontos(List<MyWaypoint> lista) {
         // Criando um conjunto de pontos
-        Set<MyWaypoint> pontos = new HashSet<MyWaypoint>(lista);
+        this.pontos = new HashSet<MyWaypoint>(lista);
         // Informando o conjunto ao painter
         pontosPainter.setWaypoints(pontos);
     }
@@ -203,8 +218,11 @@ public class GerenciadorMapa {
         @Override
         public void mousePressed(MouseEvent e) {
             JXMapViewer mapa = gerenciador.getMapKit().getMainMap();
+
+
             GeoPosition loc = mapa.convertPointToGeoPosition(e.getPoint());
-//    		System.out.println(loc.getLatitude()+", "+loc.getLongitude());
+
+            System.out.println(loc.getLatitude()+", "+loc.getLongitude());
             lastButton = e.getButton();
             // Botão 3: seleciona localização
             if (lastButton == MouseEvent.BUTTON3) {
@@ -213,6 +231,35 @@ public class GerenciadorMapa {
                 //gerenciador.getMapKit().setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
                 gerenciador.getMapKit().repaint();
             }
+            if (lastButton == MouseEvent.BUTTON1) {
+
+                GeoPosition gp = new GeoPosition(loc.getLatitude(), loc.getLongitude());
+                Consultas c = new Consultas();
+
+                MyWaypoint waypoint = c.getParadaProxima(gp, gerenciador.pontos, mapa);
+
+                //Muda a propriedade color do waypoint mais proximo
+                for(MyWaypoint ponto : gerenciador.pontos){
+                    if(ponto.getParada().getId().equals(waypoint.getParada().getId())){
+                        ponto.setColor(Color.RED);
+                        break;
+                    }
+                }
+                //Converte set para list
+                List<MyWaypoint> listWp = new ArrayList<MyWaypoint>();
+                for(MyWaypoint ponto : gerenciador.pontos){
+                    listWp.add(ponto);
+                }
+
+                //Adiciona os novos pontos no mapa
+                gerenciador.setPontos(listWp);
+                //Redesenha o mapa
+                gerenciador.getMapKit().repaint();
+
+                //Abre a janela Parada
+                JanelaParada jp = new JanelaParada(waypoint.getParada());
+            }
+
         }
 
         public void mouseDragged(MouseEvent e) {
@@ -221,8 +268,11 @@ public class GerenciadorMapa {
                 JXMapViewer mapa = gerenciador.getMapKit().getMainMap();
                 gerenciador.setSelecaoBorda(mapa.convertPointToGeoPosition(e.getPoint()));
                 gerenciador.getMapKit().repaint();
+
+
             }
         }
+
     }
 
 }
