@@ -22,6 +22,7 @@ import org.jxmapviewer.VirtualEarthTileFactoryInfo;
 import org.jxmapviewer.painter.CompoundPainter;
 import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.viewer.*;
+import consultaonibus.consultas.*;
 
 /**
  * Classe para gerenciar um mapa
@@ -45,12 +46,22 @@ public class GerenciadorMapa {
     private double valorMenor;
     private double valorMaior;
 
+    private GeoPosition pontoReferencial;
+
     private Set<MyWaypoint> pontos;
 
     public enum FonteImagens {
 
         OpenStreetMap, VirtualEarth
     };
+
+    public GeoPosition getPontoReferencial() {
+        return pontoReferencial;
+    }
+
+    public void setPontoReferencial(GeoPosition pontoReferencial) {
+        this.pontoReferencial = pontoReferencial;
+    }
 
     public GeoPosition getClickGeoPosition() {
         return clickGeoPosition;
@@ -269,7 +280,7 @@ public class GerenciadorMapa {
 
 
             GeoPosition loc = mapa.convertPointToGeoPosition(e.getPoint());
-
+            gerenciador.pontoReferencial = loc;
             System.out.println(loc.getLatitude()+", "+loc.getLongitude());
             lastButton = e.getButton();
             // Botão 3: seleciona localização
@@ -282,7 +293,7 @@ public class GerenciadorMapa {
 
         }
 
-        public void mouseDragged(MouseEvent e) {
+        /*public void mouseDragged(MouseEvent e) {
             // Arrasta com o botão 3 para definir o raio
             if (lastButton == MouseEvent.BUTTON3) {
                 JXMapViewer mapa = gerenciador.getMapKit().getMainMap();
@@ -290,6 +301,23 @@ public class GerenciadorMapa {
                 gerenciador.getMapKit().repaint();
 
 
+            }
+        }*/
+        public void mouseDragged(MouseEvent e) {
+            // Arrasta com o botÃ£o 3 para definir o raio
+            if (lastButton == MouseEvent.BUTTON3) {
+                JXMapViewer mapa = gerenciador.getMapKit().getMainMap();
+                gerenciador.setSelecaoBorda(mapa.convertPointToGeoPosition(e.getPoint()));
+                gerenciador.getMapKit().repaint();
+
+            }
+        }
+
+        public void mouseReleased(MouseEvent e){
+            if (lastButton == MouseEvent.BUTTON3){
+                lastButton = MouseEvent.MOUSE_RELEASED;
+                //Consultas c = new Consultas();
+                //c.getParadasNumRaio(gerenciador.pontoReferencial.getLatitude(), gerenciador.pontoReferencial.getLongitude(), gerenciador.getRaio());
             }
         }
 

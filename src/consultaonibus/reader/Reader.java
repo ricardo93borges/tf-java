@@ -1,10 +1,6 @@
 package consultaonibus.reader;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,7 +14,7 @@ public class Reader {
 		
 	}
 	
-	public ArrayList readCsv(String arquivo, String delimitador){
+	/*public ArrayList readCsv(String arquivo, String delimitador){
 		ArrayList<String[]> matriz = new ArrayList();
 		try{
 			Scanner scanner = new Scanner(new File(arquivo));
@@ -34,7 +30,7 @@ public class Reader {
 			System.out.println(e.getMessage());
 		}
 		return matriz;
-	}
+	}*/
 	
 	public void writeCsv(String arquivo, ArrayList conteudo, String delimitador){
 		try(PrintWriter writer = new PrintWriter(new FileWriter(arquivo, true))){
@@ -46,5 +42,34 @@ public class Reader {
 		} catch (IOException e) {
 			System.err.format("Erro de E/S: %s%n", e);
 		}
+	}
+
+	public ArrayList readCsv(String arquivo, String delimitador){
+		ArrayList<String[]> matriz = new ArrayList();
+		try{
+			FileReader arq = new FileReader(arquivo);
+			BufferedReader lerArq = new BufferedReader(arq);
+
+			String linha = lerArq.readLine();
+
+			while ((linha = lerArq.readLine()) != null){
+				String[] line = linha.split(delimitador);
+				if (arquivo == "paradas.csv"){
+					StringBuilder lat = new StringBuilder(line[2]);
+					StringBuilder lng = new StringBuilder(line[3]);
+
+					lat.setCharAt(3, '.');
+					lng.setCharAt(3, '.');
+
+					line[2] = lat.toString();
+					line[3] = lng.toString();
+				}
+				matriz.add(line);
+			}
+
+		} catch (IOException e) {
+			System.out.println("NÃO ENCONTREI O ARQUIVO!.");
+		}
+		return matriz;
 	}
 }

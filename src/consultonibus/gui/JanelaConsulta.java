@@ -236,6 +236,16 @@ public class JanelaConsulta extends JFrame {
 
         // Para obter o centro e o raio, usar como segue:
         GeoPosition centro = gerenciador.getSelecaoCentro();
+        if(centro == null){
+            javax.swing.JOptionPane.showMessageDialog(null, "Selecione as paradas primeiro.");
+        }else {
+            System.out.println("centro:" + centro);
+
+            Consultas c = new Consultas();
+            ArrayList<Parada> paradas = c.getParadasNumRaio(gerenciador.getPontoReferencial().getLatitude(), gerenciador.getPontoReferencial().getLongitude(), gerenciador.getRaio());
+            JanelaParadas jp = new JanelaParadas(paradas);
+        }
+        /*
         int raio = gerenciador.getRaio();
 
         // Lista para armazenar o resultado da consulta
@@ -254,6 +264,8 @@ public class JanelaConsulta extends JFrame {
         gerenciador.setIntervaloValores(menorValor, maiorValor);
 
         this.repaint();
+        */
+
     }
 
 }

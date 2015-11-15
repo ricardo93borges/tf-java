@@ -115,7 +115,7 @@ public class Consultas {
 		return retorno;
 	}
 	
-	public ArrayList getLinhasByParadas(ArrayList<String> paradas){
+	public ArrayList getLinhasByParadas(ArrayList<Parada> paradas){
 		Reader r = new Reader();
 		ArrayList<String[]> paradasLinhas = r.readCsv("paradalinha.csv", ";");
 		ArrayList<String[]> linhas = r.readCsv("linhas.csv", ";");
@@ -125,7 +125,7 @@ public class Consultas {
 			String[] aux = paradasLinhas.get(i);
 
 			for(int k=0; k < paradas.size(); k++){
-				if(aux[1].equals(paradas.get(k))){
+				if(aux[1].equals(paradas.get(k).getId())){
 					for(int j=0; j < linhas.size(); j++){
 						String[] aux2 = linhas.get(j);
 						if(aux2[0].equals(aux[0])){
@@ -201,6 +201,65 @@ public class Consultas {
 		}
 
 		return pontoProx;
+	}
+
+	private double calculaDistancia(double lat1, double lng1, double lat2, double lng2) {
+		//double earthRadius = 3958.75;//miles
+		double earthRadius = 6371;//kilometers
+		double dLat = Math.toRadians(lat2 - lat1);
+		double dLng = Math.toRadians(lng2 - lng1);
+		double sindLat = Math.sin(dLat / 2);
+		double sindLng = Math.sin(dLng / 2);
+		double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+				* Math.cos(Math.toRadians(lat1))
+				* Math.cos(Math.toRadians(lat2));
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		double dist = earthRadius * c;
+
+		return dist * 1000; //em metros
+	}
+
+	public ArrayList<Parada> getParadasNumRaio(double latitude, double longetitude, int raio){
+
+		Reader r = new Reader();
+		double dist = 0.0;
+		ArrayList<String[]> paradas = r.readCsv("paradas.csv", ";");
+		ArrayList<String> id_paradasNumRaio = new ArrayList<>();
+
+		for (String[] contLinha: paradas) {
+			Parada p = new Parada(contLinha[0], contLinha[1].substring(1, contLinha[1].length()-1), contLinha[2].substring(0, contLinha[2].length()-6), contLinha[3].substring(0,  contLinha[3].length()-6), contLinha[4]);
+			dist = this.calculaDistancia(Double.parseDouble(p.getLatitude()), Double.parseDouble(p.getLongitude()), latitude, longetitude);
+
+			if (dist <= raio) id_paradasNumRaio.add(p.getId());
+		}
+
+		ArrayList<String[]> paradaLinha = r.readCsv("paradalinha.csv", ";");
+		ArrayList<String> id_linhasNumRaio = new ArrayList<>();
+
+		for (String[] contLinha: paradaLinha) {
+			ParadaLinha l = new ParadaLinha(contLinha[0], contLinha[1]);
+			if(id_paradasNumRaio.contains(l.getIdParada())) id_linhasNumRaio.add(l.getIdLinha());
+		}
+
+		ArrayList<Parada> pdas = new ArrayList<Parada>();
+		ArrayList<Parada> todasParadas = this.getParadas();
+		for(int i=0; i < todasParadas.size(); i++){
+			if(id_paradasNumRaio.contains(todasParadas.get(i).getId())){
+				pdas.add(todasParadas.get(i));
+			}
+		}
+
+		return pdas;
+		/*
+		ArrayList<String[]> linhas = r.readCsv("linhas.csv", ";");
+		ArrayList<Linha> respLinhas = new ArrayList<Linha>();
+
+		for (String[] contLinha: linhas) {
+			Linha l = new Linha(contLinha[0], contLinha[1], contLinha[2], contLinha[3]);
+			if(id_linhasNumRaio.contains(l.getId())) respLinhas.add(l);
+		}
+		*/
+
 	}
 
 }
