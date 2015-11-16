@@ -223,14 +223,19 @@ public class Consultas {
 
 		Reader r = new Reader();
 		double dist = 0.0;
-		ArrayList<String[]> paradas = r.readCsv("paradas.csv", ";");
+		//ArrayList<String[]> paradas = r.readCsv("paradas.csv", ";");
+		ArrayList<Parada> paradas = this.getParadas();
 		ArrayList<String> id_paradasNumRaio = new ArrayList<>();
 
-		for (String[] contLinha: paradas) {
-			Parada p = new Parada(contLinha[0], contLinha[1].substring(1, contLinha[1].length()-1), contLinha[2].substring(0, contLinha[2].length()-6), contLinha[3].substring(0,  contLinha[3].length()-6), contLinha[4]);
-			dist = this.calculaDistancia(Double.parseDouble(p.getLatitude()), Double.parseDouble(p.getLongitude()), latitude, longetitude);
+		//for (String[] contLinha : paradas) {
+		for(int i=1; i<paradas.size(); i++){
+			//Parada p = new Parada(contLinha[0], contLinha[1].substring(1, contLinha[1].length()-1), contLinha[2].substring(0, contLinha[2].length()-6), contLinha[3].substring(0,  contLinha[3].length()-6), contLinha[4]);
+			String pLat = Util.substituir(paradas.get(i).getLatitude(), ",", ".");
+			String pLng = Util.substituir(paradas.get(i).getLongitude(), ",", ".");
+			System.out.println(pLat+" : "+pLng);
+			dist = this.calculaDistancia(Double.parseDouble(pLat), Double.parseDouble(pLng), latitude, longetitude);
 
-			if (dist <= raio) id_paradasNumRaio.add(p.getId());
+			if (dist <= raio) id_paradasNumRaio.add(paradas.get(i).getId());
 		}
 
 		ArrayList<String[]> paradaLinha = r.readCsv("paradalinha.csv", ";");

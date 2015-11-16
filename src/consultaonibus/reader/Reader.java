@@ -14,7 +14,7 @@ public class Reader {
 		
 	}
 	
-	/*public ArrayList readCsv(String arquivo, String delimitador){
+	public ArrayList readCsv(String arquivo, String delimitador){
 		ArrayList<String[]> matriz = new ArrayList();
 		try{
 			Scanner scanner = new Scanner(new File(arquivo));
@@ -30,7 +30,7 @@ public class Reader {
 			System.out.println(e.getMessage());
 		}
 		return matriz;
-	}*/
+	}
 	
 	public void writeCsv(String arquivo, ArrayList conteudo, String delimitador){
 		try(PrintWriter writer = new PrintWriter(new FileWriter(arquivo, true))){
@@ -44,7 +44,7 @@ public class Reader {
 		}
 	}
 
-	public ArrayList readCsv(String arquivo, String delimitador){
+	public ArrayList readCsv(String arquivo, String delimitador, boolean x){
 		ArrayList<String[]> matriz = new ArrayList();
 		try{
 			FileReader arq = new FileReader(arquivo);

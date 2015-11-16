@@ -155,8 +155,8 @@ public class JanelaCadastro extends JFrame{
 	    	String idLinha = linha.getId();
 	    	String codigo = 	"\""+cadParadaTextCodigo.getText()+"\"";
 	    	String terminal = 	cadParadaComboTerminal.getSelectedItem().toString();
-	    	String latitude = 	"\""+cadParadaTextLatitude.getText()+"\"";
-	    	String longitude = 	"\""+cadParadaTextLongitude.getText()+"\"";
+	    	String latitude = 	cadParadaTextLatitude.getText();
+	    	String longitude = 	cadParadaTextLongitude.getText();
 	    	
 	    	
 	    	if(id == null || id.isEmpty() || latitude == null || latitude.isEmpty() || codigo == null || codigo.isEmpty() || longitude == null || longitude.isEmpty()){
