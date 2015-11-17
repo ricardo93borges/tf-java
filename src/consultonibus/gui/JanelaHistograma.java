@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import consultaonibus.ParadaLinha;
+import javax.swing.JFrame;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -17,9 +18,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import consultaonibus.Linha;
 import consultaonibus.Parada;
 import consultaonibus.consultas.Consultas;
-import consultaonibus.reader.Reader;
-
-import javax.swing.*;
 
 
 public class JanelaHistograma extends JFrame{

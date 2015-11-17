@@ -69,14 +69,10 @@ public class JanelaConsulta extends JFrame {
         List<MyWaypoint> pontos = new ArrayList<MyWaypoint>();
 
         for(int i=1; i < gerenciador.getParadas().size(); i++) {
-            //System.out.println(paradas.get(i).getLatitude());
-            String latStr = Util.substituir(gerenciador.getParadas().get(i).getLatitude(), ",", ".");
-            String lngStr = Util.substituir(gerenciador.getParadas().get(i).getLongitude(), ",", ".");
 
-            double lat = Double.parseDouble(latStr);
-            double lng = Double.parseDouble(lngStr);
+            double lat = gerenciador.getParadas().get(i).getLatitude();
+            double lng = gerenciador.getParadas().get(i).getLongitude();
 
-            //Color color = new Color(0, 0, 0);
             GeoPosition coord = new GeoPosition(lat, lng);
             MyWaypoint wp = new MyWaypoint(Color.BLUE, 2.0, coord);
             wp.setParada(gerenciador.getParadas().get(i));

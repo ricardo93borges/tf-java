@@ -304,16 +304,6 @@ public class GerenciadorMapa {
 
         }
 
-        /*public void mouseDragged(MouseEvent e) {
-            // Arrasta com o botão 3 para definir o raio
-            if (lastButton == MouseEvent.BUTTON3) {
-                JXMapViewer mapa = gerenciador.getMapKit().getMainMap();
-                gerenciador.setSelecaoBorda(mapa.convertPointToGeoPosition(e.getPoint()));
-                gerenciador.getMapKit().repaint();
-
-
-            }
-        }*/
         public void mouseDragged(MouseEvent e) {
             // Arrasta com o botÃ£o 3 para definir o raio
             if (lastButton == MouseEvent.BUTTON3) {

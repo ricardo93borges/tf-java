@@ -6,6 +6,7 @@ import java.util.Vector;
 //import consultaonibus.consultas.Consultas;
 import consultaonibus.Parada;
 import consultaonibus.Linha;
+import consultaonibus.Util;
 
 import javax.swing.*;
 
@@ -176,7 +177,9 @@ public class JanelaCadastro extends JFrame{
 		    	}else if(terminal.equals("Não")){
 		    		terminal = "\"N\"";
 		    	}
-		    	Parada parada = new Parada(id, codigo, latitude, longitude, terminal, new ArrayList<Linha>());
+		    	String lng = Util.substituir(latitude, ",", ".");
+				String lat = Util.substituir(longitude, ",", ".");
+				Parada parada = new Parada(id, codigo, Double.parseDouble(lng), Double.parseDouble(lat), terminal, new ArrayList<Linha>());
 		    	parada.addParada();
 		    	parada.relacionaLinhaParada(idLinha, id);
 		    	

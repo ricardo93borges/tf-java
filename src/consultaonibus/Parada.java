@@ -9,12 +9,12 @@ public class Parada {
 	
 	private int id;
 	private String codigo;
-	private String longitude;
-	private String latitude;
+	private double longitude;
+	private double latitude;
 	private String terminal;
 	private ArrayList<Linha> linhas;
 	
-	public Parada(int id, String codigo, String longitude, String latitude, String terminal, ArrayList<Linha> linhas) {
+	public Parada(int id, String codigo, double longitude, double latitude, String terminal, ArrayList<Linha> linhas) {
 		this.id = id;
 		this.codigo = codigo;
 		this.longitude = longitude;
@@ -47,19 +47,19 @@ public class Parada {
 		this.codigo = codigo;
 	}
 
-	public String getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(String longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 
-	public String getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(String latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 

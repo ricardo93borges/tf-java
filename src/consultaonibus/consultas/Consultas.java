@@ -1,20 +1,17 @@
 package consultaonibus.consultas;
 
-import java.awt.*;
-import java.awt.geom.Arc2D;
 import java.awt.geom.Point2D;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Set;
 
-import consultaonibus.Util;
-import consultaonibus.reader.Reader;
-import consultaonibus.Linha;
-import consultaonibus.Parada;
-import consultaonibus.ParadaLinha;
-import consultonibus.gui.MyWaypoint;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
-import org.jxmapviewer.viewer.Waypoint;
+
+import consultaonibus.Linha;
+import consultaonibus.Parada;
+import consultaonibus.Util;
+import consultaonibus.reader.Reader;
+import consultonibus.gui.MyWaypoint;
 
 public class Consultas {
 	
@@ -58,7 +55,9 @@ public class Consultas {
 				for(int j=0; j < paradas.size(); j++){
 					String[] aux2 = paradas.get(j);
 					if(aux[1].equals(aux2[0])){
-						retorno.add(new Parada(Integer.parseInt(aux2[0]), aux2[1], aux2[2], aux2[3], aux2[4], new ArrayList<Linha>()));
+						String lng = Util.substituir(aux2[2], ",", ".");
+						String lat = Util.substituir(aux2[3], ",", ".");
+						retorno.add(new Parada(Integer.parseInt(aux2[0]), aux2[1], Double.parseDouble(lng), Double.parseDouble(lat), aux2[4], new ArrayList<Linha>()));
 						break;
 					}
 				}
@@ -100,7 +99,9 @@ public class Consultas {
 			System.out.println("Carregando paradas: "+j+"/"+paradasSize);
 			String[] aux2 = paradas.get(j);
 			ArrayList<Linha> arrayLinhas = this.getLinhasByParada(aux2[0], paradasLinhas, linhas);
-			retorno.add(new Parada(Integer.parseInt(aux2[0]), aux2[1], aux2[2], aux2[3], aux2[4], arrayLinhas));
+			String lng = Util.substituir(aux2[2], ",", ".");
+			String lat = Util.substituir(aux2[3], ",", ".");
+			retorno.add(new Parada(Integer.parseInt(aux2[0]), aux2[1], Double.parseDouble(lng), Double.parseDouble(lat), aux2[4], arrayLinhas));
 		}
 		
 		return retorno;
@@ -175,10 +176,10 @@ public class Consultas {
 		ArrayList<Integer> id_paradasNumRaio = new ArrayList<>();
 
 		for(int i=1; i<paradas.size(); i++){
-			String pLat = Util.substituir(paradas.get(i).getLatitude(), ",", ".");
-			String pLng = Util.substituir(paradas.get(i).getLongitude(), ",", ".");
+			double pLat = paradas.get(i).getLatitude();
+			double pLng = paradas.get(i).getLongitude();
 
-			dist = this.calculaDistancia(Double.parseDouble(pLat), Double.parseDouble(pLng), latitude, longetitude);
+			dist = this.calculaDistancia(pLat, pLng, latitude, longetitude);
 
 			if (dist <= raio) id_paradasNumRaio.add(paradas.get(i).getId());
 		}
