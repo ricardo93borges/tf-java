@@ -3,7 +3,7 @@ package consultonibus.gui;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import consultaonibus.consultas.Consultas;
+//import consultaonibus.consultas.Consultas;
 import consultaonibus.Parada;
 import consultaonibus.Linha;
 
@@ -21,14 +21,25 @@ public class JanelaCadastro extends JFrame{
     private javax.swing.JTextField cadParadaTextCodigo;
     private javax.swing.JComboBox cadParadaComboTerminal;
     private javax.swing.JComboBox cadParadaComboLinha;
+    private ArrayList<Parada> paradas = new ArrayList<Parada>();
+    private ArrayList<Linha> linhas = new ArrayList<Linha>();
 	
-	 public JanelaCadastro() {
+	 public JanelaCadastro(ArrayList<Parada> paradas) {
+		 this.paradas = paradas;
+		 System.out.println("getting linhas");
+		 for(int i = 0; i < paradas.size(); i++){
+			 for(int j = 0; j < paradas.get(i).getLinhas().size(); j++){
+				 this.linhas.add(paradas.get(i).getLinhas().get(j));
+			 }
+		 }
+		 System.out.println("got it");
+		 
 		 javax.swing.JTabbedPane tabPaneCadastro = new javax.swing.JTabbedPane();
 		 this.setSize(400, 450);
 		 this.setTitle("Cadastro");
 
 	     tabPaneCadastro.addTab("Linha", initCadastroLinhaTab());
-		 tabPaneCadastro.addTab("Parada", initCadastroParadaTab());
+	     tabPaneCadastro.addTab("Parada", initCadastroParadaTab());
 
 		 this.add(tabPaneCadastro);
 		 this.setVisible(true);
@@ -41,13 +52,11 @@ public class JanelaCadastro extends JFrame{
 		javax.swing.JPanel panelCadastro = new javax.swing.JPanel();
 
 		//Define o proximo ID
-		Consultas c = new Consultas();
-		ArrayList<Parada> paradas = c.getParadas();
-		Parada.ordenar(paradas);
-		ArrayList<Linha> linhas = c.getLinhas();
+		
+		//Parada.ordenar(paradas);
 		int index = paradas.size()-1;
 		Parada p = paradas.get(index);
-		String nextId = String.valueOf((Integer.parseInt(p.getId()))+1);
+		String nextId = String.valueOf((p.getId())+1);
 
 		javax.swing.JLabel cadParadaLabelId = new javax.swing.JLabel("ID");
 		javax.swing.JLabel cadParadaLabelCodigo = new javax.swing.JLabel("Código");
@@ -150,16 +159,16 @@ public class JanelaCadastro extends JFrame{
 	}
 
 	    public void cadastrarParada(java.awt.event.ActionEvent evt){
-	    	String id = cadParadaTextID.getText();
+	    	int id = Integer.parseInt(cadParadaTextID.getText());
 	    	Linha linha = (Linha)cadParadaComboLinha.getSelectedItem();
-	    	String idLinha = linha.getId();
+	    	int idLinha = linha.getId();
 	    	String codigo = 	"\""+cadParadaTextCodigo.getText()+"\"";
 	    	String terminal = 	cadParadaComboTerminal.getSelectedItem().toString();
 	    	String latitude = 	cadParadaTextLatitude.getText();
 	    	String longitude = 	cadParadaTextLongitude.getText();
 	    	
 	    	
-	    	if(id == null || id.isEmpty() || latitude == null || latitude.isEmpty() || codigo == null || codigo.isEmpty() || longitude == null || longitude.isEmpty()){
+	    	if(latitude == null || latitude.isEmpty() || codigo == null || codigo.isEmpty() || longitude == null || longitude.isEmpty()){
 	    		javax.swing.JOptionPane.showMessageDialog(null, "Informe todos os campos");
 	    	}else{
 		    	if(terminal.equals("Sim")){
@@ -167,7 +176,7 @@ public class JanelaCadastro extends JFrame{
 		    	}else if(terminal.equals("Não")){
 		    		terminal = "\"N\"";
 		    	}
-		    	Parada parada = new Parada(id, codigo, latitude, longitude, terminal);
+		    	Parada parada = new Parada(id, codigo, latitude, longitude, terminal, new ArrayList<Linha>());
 		    	parada.addParada();
 		    	parada.relacionaLinhaParada(idLinha, id);
 		    	
@@ -182,12 +191,12 @@ public class JanelaCadastro extends JFrame{
 	    	javax.swing.JPanel panelCadastro = new javax.swing.JPanel();
 
 	    	//Define o proximo ID
-			Consultas c = new Consultas();
-			ArrayList<Linha> linhas = c.getLinhas();
-			Linha.ordenar(linhas);
+	    	System.out.println("Ordenando");
+			//Linha.ordenar(linhas);
 			int index = linhas.size()-1;
 			Linha l = linhas.get(index);
-			String nextId = String.valueOf((Integer.parseInt(l.getId()))+1);
+			String nextId = String.valueOf((l.getId())+1);
+			System.out.println("Done");
 			
 	    	javax.swing.JLabel labelId = new javax.swing.JLabel("ID");
 	    	javax.swing.JLabel labelNome = new javax.swing.JLabel("Nome");
@@ -261,12 +270,12 @@ public class JanelaCadastro extends JFrame{
 	    
 	    public void cadastrarLinha(java.awt.event.ActionEvent evt){
 			System.out.println("Click");
-	    	String id = cadLinhaTextId.getText();
+	    	int id = Integer.parseInt(cadLinhaTextId.getText());
 	    	String nome = 	"\""+cadLinhaTextNome.getText()+"\"";
 	    	String codigo = "\""+cadLinhaTextCodigo.getText()+"\"";
 	    	String tipo = 	cadLinhaComboTipo.getSelectedItem().toString();
 
-	    	if(id == null || id.isEmpty() || nome == null || nome.isEmpty() || codigo == null || codigo.isEmpty()){
+	    	if(nome == null || nome.isEmpty() || codigo == null || codigo.isEmpty()){
 	    		javax.swing.JOptionPane.showMessageDialog(null, "Informe todos os campos");
 	    	}else{
 		    	if(tipo.equals("Onibus")){
@@ -274,7 +283,7 @@ public class JanelaCadastro extends JFrame{
 		    	}else if(tipo.equals("Lotação")){
 		    		tipo = "\"L\"";
 		    	}
-		    	Linha linha = new Linha(id, nome, codigo, tipo);
+		    	Linha linha = new Linha(id, nome, codigo, tipo, new ArrayList<Parada>());
 		    	linha.addLinha();
 		    	
 		    	javax.swing.JOptionPane.showMessageDialog(null, "Nova linha da cadastrada com sucesso!");

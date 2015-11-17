@@ -23,8 +23,10 @@ import javax.swing.*;
 
 
 public class JanelaHistograma extends JFrame{
+	private ArrayList<Parada> paradas = new ArrayList<Parada>();
 	
-	public JanelaHistograma(){
+	public JanelaHistograma(ArrayList<Parada> paradas){
+		this.paradas = paradas;
 		javax.swing.JPanel panelHistograma = new javax.swing.JPanel();
 		this.setSize(1080, 720);
 		this.setTitle("Histograma");
@@ -49,38 +51,16 @@ public class JanelaHistograma extends JFrame{
 		this.setVisible(true);
 	}
 
-	public ArrayList getParadasByLinha(String linha){
-		Reader r = new Reader();
-		ArrayList<String[]> paradasLinhas = r.readCsv("paradalinha.csv", ";");
-		ArrayList<String[]> paradas = r.readCsv("paradas.csv", ";");
-		ArrayList<Parada> retorno = new ArrayList<Parada>();
-
-		for(int i=0; i < paradasLinhas.size(); i++){
-			String[] aux = paradasLinhas.get(i);
-
-			if(aux[0].equals(linha)){
-				for(int j=0; j < paradas.size(); j++){
-					String[] aux2 = paradas.get(j);
-					if(aux2[0].equals(aux[1])){
-						retorno.add(new Parada(aux2[0], aux2[1], aux2[2], aux2[3], aux2[4]));
-					}
-				}
-			}
-		}
-
-		return retorno;
-	}
-
-	public ArrayList<Parada> getParadasByLinha(String linhaId, ArrayList<ParadaLinha> paradasLinhas, ArrayList<Parada> paradas){
+	public ArrayList<Parada> getParadasByLinha(int linhaId, ArrayList<ParadaLinha> paradasLinhas){
 		ArrayList<Parada> retorno = new ArrayList<Parada>();
 
 		for(int i=0; i < paradasLinhas.size(); i++){
 			ParadaLinha pl = paradasLinhas.get(i);
 
-			if(pl.getIdLinha().equals(linhaId)){
-				for(int j=0; j < paradas.size(); j++){
-					Parada p = paradas.get(j);
-					if(p.getId().equals(pl.getIdParada())){
+			if(pl.getIdLinha().equals(String.valueOf(linhaId))){
+				for(int j=0; j < this.paradas.size(); j++){
+					Parada p = this.paradas.get(j);
+					if(pl.getIdParada().equals(String.valueOf(p.getId()))){
 						retorno.add(p);
 					}
 				}
@@ -92,20 +72,21 @@ public class JanelaHistograma extends JFrame{
 
 	public Map<Double, Double> getDados(){
 		Consultas c = new Consultas();
-		Map<String, Integer> linhasParadas = new HashMap<String, Integer>();
+		Map<Integer, Integer> linhasParadas = new HashMap<Integer, Integer>();
 		Map<Double, Double> dados = new HashMap<Double, Double>(); 
 		
+		System.out.println("**********");
 		ArrayList<Linha> linhas = c.getLinhas();
 		ArrayList<ParadaLinha> paradasLinhas = c.getParadaLinha();
-		ArrayList<Parada> paradas = c.getParadas();
+		//ArrayList<Parada> paradas = c.getParadas();
 		
-		//System.out.println("loop 1");
+		System.out.println("loop 1");
 		for(int i=1; i<linhas.size(); i++){
-			ArrayList<Parada> linhaParadas = this.getParadasByLinha(linhas.get(i).getId(), paradasLinhas, paradas);
+			ArrayList<Parada> linhaParadas = this.getParadasByLinha(linhas.get(i).getId(), paradasLinhas);
 			linhasParadas.put(linhas.get(i).getId(), linhaParadas.size());
 		}
 		
-		//System.out.println("loop 2");
+		System.out.println("loop 2");
 		Iterator it = linhasParadas.entrySet().iterator();
 	    while (it.hasNext()) {
 	        Map.Entry pair = (Map.Entry)it.next();
@@ -118,14 +99,14 @@ public class JanelaHistograma extends JFrame{
 	        //it.remove(); 
 	    }
 		
-	    /*System.out.println("loop 3");
-	    it = dados.entrySet().iterator();
+	    System.out.println("loop 3");
+	    it = linhasParadas.entrySet().iterator();
 	    while (it.hasNext()) {
 	        Map.Entry pair = (Map.Entry)it.next();
 	        System.out.println(pair.getKey() + " = " + pair.getValue());
 	        //it.remove(); 
 	    }
-	    */
+	    
 	    return dados;
 	}
 }

@@ -35,11 +35,11 @@ public class JanelaParada extends JFrame{
 
 		System.out.println("pda ID: "+this.parada.getId());
 		Consultas c = new Consultas();
-		ArrayList<Linha> linhas = c.getLinhasByParada(this.parada.getId());
+		ArrayList<Linha> linhas = c.getLinhasByParada(String.valueOf(this.parada.getId()));
 		String[][] data = new String[linhas.size()][5];
 
 		for(int i = 1; i < linhas.size(); i++){
-			String[] l = {linhas.get(i).getId(), linhas.get(i).getNome(), linhas.get(i).getCodigo(), linhas.get(i).getTipo(),};
+			String[] l = {String.valueOf(linhas.get(i).getId()), linhas.get(i).getNome(), linhas.get(i).getCodigo(), linhas.get(i).getTipo(),};
 			data[i-1] = l;
 		}
 		//Cria a tabela

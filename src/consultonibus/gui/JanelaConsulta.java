@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
 
+import consultaonibus.Linha;
 import consultaonibus.Parada;
 import consultaonibus.Util;
 import consultaonibus.consultas.Consultas;
@@ -64,13 +65,13 @@ public class JanelaConsulta extends JFrame {
 
     public void showPontos(){
         Consultas c = new Consultas();
-        ArrayList<Parada> paradas = c.getParadas();
+        gerenciador.setParadas(c.getParadas());
         List<MyWaypoint> pontos = new ArrayList<MyWaypoint>();
 
-        for(int i=1; i<paradas.size(); i++) {
+        for(int i=1; i < gerenciador.getParadas().size(); i++) {
             //System.out.println(paradas.get(i).getLatitude());
-            String latStr = Util.substituir(paradas.get(i).getLatitude(), ",", ".");
-            String lngStr = Util.substituir(paradas.get(i).getLongitude(), ",", ".");
+            String latStr = Util.substituir(gerenciador.getParadas().get(i).getLatitude(), ",", ".");
+            String lngStr = Util.substituir(gerenciador.getParadas().get(i).getLongitude(), ",", ".");
 
             double lat = Double.parseDouble(latStr);
             double lng = Double.parseDouble(lngStr);
@@ -78,13 +79,10 @@ public class JanelaConsulta extends JFrame {
             //Color color = new Color(0, 0, 0);
             GeoPosition coord = new GeoPosition(lat, lng);
             MyWaypoint wp = new MyWaypoint(Color.BLUE, 2.0, coord);
-            wp.setParada(paradas.get(i));
+            wp.setParada(gerenciador.getParadas().get(i));
             pontos.add(wp);
-
         }
-
         gerenciador.setPontos(pontos);
-
     }
 
 
@@ -221,15 +219,15 @@ public class JanelaConsulta extends JFrame {
     }
     
 	public void showCadastro(java.awt.event.ActionEvent evt){
-	   JanelaCadastro cadastro = new JanelaCadastro();
+		JanelaCadastro cadastro = new JanelaCadastro(gerenciador.getParadas());
 	}
     
 	public void showLinhas(java.awt.event.ActionEvent evt){
-		JanelaLinhas linhas = new JanelaLinhas(gerenciador);
+		JanelaLinhas jl = new JanelaLinhas(gerenciador, gerenciador.getParadas());
 	}
 
 	public void showHistograma(java.awt.event.ActionEvent evt){
-		JanelaHistograma histograma = new JanelaHistograma();
+		JanelaHistograma histograma = new JanelaHistograma(gerenciador.getParadas());
 	}
     
     private void btnConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultaActionPerformed
@@ -242,7 +240,7 @@ public class JanelaConsulta extends JFrame {
             System.out.println("centro:" + centro);
 
             Consultas c = new Consultas();
-            ArrayList<Parada> paradas = c.getParadasNumRaio(gerenciador.getPontoReferencial().getLatitude(), gerenciador.getPontoReferencial().getLongitude(), gerenciador.getRaio());
+            ArrayList<Parada> paradas = c.getParadasNumRaio(gerenciador.getPontoReferencial().getLatitude(), gerenciador.getPontoReferencial().getLongitude(), gerenciador.getRaio(), gerenciador.getParadas());
             JanelaParadas jp = new JanelaParadas(paradas);
         }
         /*

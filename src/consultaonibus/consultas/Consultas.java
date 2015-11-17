@@ -3,6 +3,7 @@ package consultaonibus.consultas;
 import java.awt.*;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Point2D;
+import java.lang.reflect.Array;
 import java.util.*;
 
 import consultaonibus.Util;
@@ -30,9 +31,10 @@ public class Consultas {
 		ArrayList<String[]> linhas = r.readCsv("linhas.csv", ";");
 		ArrayList<Linha> retorno = new ArrayList<Linha>();
 		
-		for(int j=0; j < linhas.size(); j++){
+		for(int j=1; j < linhas.size(); j++){
 			String[] aux2 = linhas.get(j);
-			retorno.add(new Linha(aux2[0], aux2[1], aux2[2], aux2[3]));
+			ArrayList<Parada> paradas = new ArrayList<Parada>();//.getParadasByLinha(aux2[0]);
+			retorno.add(new Linha(Integer.parseInt(aux2[0]), aux2[1], aux2[2], aux2[3], paradas));
 		}
 	
 		return retorno;
@@ -46,14 +48,32 @@ public class Consultas {
 		ArrayList<String[]> paradasLinhas = r.readCsv("paradalinha.csv", ";");
 		ArrayList<String[]> linhas = r.readCsv("linhas.csv", ";");
 		ArrayList<Linha> retorno = new ArrayList<Linha>();
-		
+		System.out.println("pl size: "+paradasLinhas.size());
 		for(int i=0; i < paradasLinhas.size(); i++){
 			String[] aux = paradasLinhas.get(i);
 			if(aux[1].equals(parada)){
-				for(int j=0; j < linhas.size(); j++){
+				for(int j=1; j < linhas.size(); j++){
 					String[] aux2 = linhas.get(j);
 					if(aux2[0].equals(aux[0])){
-						retorno.add(new Linha(aux2[0], aux2[1], aux2[2], aux2[3]));
+						ArrayList<Parada> paradas = new ArrayList<Parada>();//.getParadasByLinha(aux2[0]);
+						retorno.add(new Linha(Integer.parseInt(aux2[0]), aux2[1], aux2[2], aux2[3], paradas));
+					}
+				}
+			}
+		}
+		return retorno;
+	}
+	
+	public ArrayList getLinhasByParada(String parada, ArrayList<String[]> paradasLinhas, ArrayList<String[]> linhas){
+		ArrayList<Linha> retorno = new ArrayList<Linha>();
+		for(int i=0; i < paradasLinhas.size(); i++){
+			String[] aux = paradasLinhas.get(i);
+			if(aux[1].equals(parada)){
+				for(int j=1; j < linhas.size(); j++){
+					String[] aux2 = linhas.get(j);
+					if(aux2[0].equals(aux[0])){
+						ArrayList<Parada> paradas = new ArrayList<Parada>();//.getParadasByLinha(aux2[0]);
+						retorno.add(new Linha(Integer.parseInt(aux2[0]), aux2[1], aux2[2], aux2[3], paradas));
 					}
 				}
 			}
@@ -67,11 +87,17 @@ public class Consultas {
 	public ArrayList getParadas(){
 		Reader r = new Reader();
 		ArrayList<String[]> paradas = r.readCsv("paradas.csv", ";");
-		ArrayList<Parada> retorno = new ArrayList<Parada>();
+		ArrayList<String[]> paradasLinhas = r.readCsv("paradalinha.csv", ";");
+		ArrayList<String[]> linhas = r.readCsv("linhas.csv", ";");
 		
-		for(int j=0; j < paradas.size(); j++){
+		ArrayList<Parada> retorno = new ArrayList<Parada>();
+		int paradasSize = paradas.size();
+		
+		for(int j=1; j < paradas.size(); j++){
+			System.out.println("Carregando paradas: "+j+"/"+paradasSize);
 			String[] aux2 = paradas.get(j);
-			retorno.add(new Parada(aux2[0], aux2[1], aux2[2], aux2[3], aux2[4]));
+			ArrayList<Linha> arrayLinhas = this.getLinhasByParada(aux2[0], paradasLinhas, linhas);
+			retorno.add(new Parada(Integer.parseInt(aux2[0]), aux2[1], aux2[2], aux2[3], aux2[4], arrayLinhas));
 		}
 		
 		return retorno;
@@ -103,15 +129,29 @@ public class Consultas {
 			String[] aux = paradasLinhas.get(i);
 
 			if(aux[0].equals(linha)){
-				for(int j=0; j < paradas.size(); j++){
+				for(int j=1; j < paradas.size(); j++){
 					String[] aux2 = paradas.get(j);
 					if(aux2[0].equals(aux[1])){
-						retorno.add(new Parada(aux2[0], aux2[1], aux2[2], aux2[3], aux2[4]));
+						ArrayList<Linha> linhas = this.getLinhasByParada(aux2[0]);
+						retorno.add(new Parada(Integer.parseInt(aux2[0]), aux2[1], aux2[2], aux2[3], aux2[4], linhas));
 					}
 				}
 			}
 		}
 		
+		return retorno;
+	}
+	
+	public ArrayList getParadasByLinha(int linha, ArrayList<Parada> paradas){
+		ArrayList<Parada> retorno = new ArrayList<Parada>();
+		for(int i=0; i < paradas.size(); i++){
+			for(int j=0; j < paradas.get(i).getLinhas().size(); j++){
+				if(paradas.get(i).getLinhas().get(j).getId() == linha){
+					retorno.add(paradas.get(i));
+				}
+			}
+		}
+
 		return retorno;
 	}
 	
@@ -129,7 +169,8 @@ public class Consultas {
 					for(int j=0; j < linhas.size(); j++){
 						String[] aux2 = linhas.get(j);
 						if(aux2[0].equals(aux[0])){
-							retorno.add(new Linha(aux2[0], aux2[1], aux2[2], aux2[3]));
+							ArrayList<Parada> pdas = this.getParadasByLinha(aux2[0]);
+							retorno.add(new Linha(Integer.parseInt(aux2[0]), aux2[1], aux2[2], aux2[3], pdas));
 						}
 					}
 				}
@@ -151,7 +192,8 @@ public class Consultas {
 				for(int i=0; i < linhas.size(); i++){
 					String[] aux = linhas.get(i);
 					if(aux[3].equals("\"O\"")){
-						retorno.add(new Linha(linhas.get(i)[0], linhas.get(i)[1], linhas.get(i)[2], linhas.get(i)[3]));
+						ArrayList<Parada> pdas = this.getParadasByLinha(linhas.get(i)[0]);
+						retorno.add(new Linha(Integer.parseInt(linhas.get(i)[0]), linhas.get(i)[1], linhas.get(i)[2], linhas.get(i)[3], pdas));
 					}
 				}
 			break;
@@ -159,7 +201,8 @@ public class Consultas {
 				for(int i=0; i < linhas.size(); i++){
 					String[] aux = linhas.get(i);
 					if(aux[3].equals("\"L\"")){
-						retorno.add(new Linha(linhas.get(i)[0], linhas.get(i)[1], linhas.get(i)[2], linhas.get(i)[3]));
+						ArrayList<Parada> pdas = this.getParadasByLinha(linhas.get(i)[0]);
+						retorno.add(new Linha(Integer.parseInt(linhas.get(i)[0]), linhas.get(i)[1], linhas.get(i)[2], linhas.get(i)[3], pdas));
 					}
 				}
 			break;
@@ -219,52 +262,29 @@ public class Consultas {
 		return dist * 1000; //em metros
 	}
 
-	public ArrayList<Parada> getParadasNumRaio(double latitude, double longetitude, int raio){
-
-		Reader r = new Reader();
+	public ArrayList<Parada> getParadasNumRaio(double latitude, double longetitude, int raio, ArrayList<Parada> paradas){
 		double dist = 0.0;
-		//ArrayList<String[]> paradas = r.readCsv("paradas.csv", ";");
-		ArrayList<Parada> paradas = this.getParadas();
-		ArrayList<String> id_paradasNumRaio = new ArrayList<>();
+		ArrayList<Integer> id_paradasNumRaio = new ArrayList<>();
 
-		//for (String[] contLinha : paradas) {
 		for(int i=1; i<paradas.size(); i++){
-			//Parada p = new Parada(contLinha[0], contLinha[1].substring(1, contLinha[1].length()-1), contLinha[2].substring(0, contLinha[2].length()-6), contLinha[3].substring(0,  contLinha[3].length()-6), contLinha[4]);
 			String pLat = Util.substituir(paradas.get(i).getLatitude(), ",", ".");
 			String pLng = Util.substituir(paradas.get(i).getLongitude(), ",", ".");
-			System.out.println(pLat+" : "+pLng);
+
 			dist = this.calculaDistancia(Double.parseDouble(pLat), Double.parseDouble(pLng), latitude, longetitude);
 
 			if (dist <= raio) id_paradasNumRaio.add(paradas.get(i).getId());
 		}
 
-		ArrayList<String[]> paradaLinha = r.readCsv("paradalinha.csv", ";");
 		ArrayList<String> id_linhasNumRaio = new ArrayList<>();
 
-		for (String[] contLinha: paradaLinha) {
-			ParadaLinha l = new ParadaLinha(contLinha[0], contLinha[1]);
-			if(id_paradasNumRaio.contains(l.getIdParada())) id_linhasNumRaio.add(l.getIdLinha());
-		}
-
 		ArrayList<Parada> pdas = new ArrayList<Parada>();
-		ArrayList<Parada> todasParadas = this.getParadas();
-		for(int i=0; i < todasParadas.size(); i++){
-			if(id_paradasNumRaio.contains(todasParadas.get(i).getId())){
-				pdas.add(todasParadas.get(i));
+
+		for(int i=0; i < paradas.size(); i++){
+			if(id_paradasNumRaio.contains(paradas.get(i).getId())){
+				pdas.add(paradas.get(i));
 			}
 		}
 
 		return pdas;
-		/*
-		ArrayList<String[]> linhas = r.readCsv("linhas.csv", ";");
-		ArrayList<Linha> respLinhas = new ArrayList<Linha>();
-
-		for (String[] contLinha: linhas) {
-			Linha l = new Linha(contLinha[0], contLinha[1], contLinha[2], contLinha[3]);
-			if(id_linhasNumRaio.contains(l.getId())) respLinhas.add(l);
-		}
-		*/
-
 	}
-
 }

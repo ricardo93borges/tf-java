@@ -49,13 +49,24 @@ public class GerenciadorMapa {
     private GeoPosition pontoReferencial;
 
     private Set<MyWaypoint> pontos;
+    private ArrayList<Parada> paradas;
 
     public enum FonteImagens {
 
         OpenStreetMap, VirtualEarth
     };
 
-    public GeoPosition getPontoReferencial() {
+    
+    
+    public ArrayList<Parada> getParadas() {
+		return paradas;
+	}
+
+	public void setParadas(ArrayList<Parada> paradas) {
+		this.paradas = paradas;
+	}
+
+	public GeoPosition getPontoReferencial() {
         return pontoReferencial;
     }
 
@@ -253,7 +264,7 @@ public class GerenciadorMapa {
 
                 //Muda a propriedade color do waypoint mais proximo
                 for(MyWaypoint ponto : gerenciador.pontos){
-                    if(ponto.getParada().getId().equals(waypoint.getParada().getId())){
+                    if(ponto.getParada().getId() == waypoint.getParada().getId()){
                         ponto.setColor(Color.RED);
                         break;
                     }

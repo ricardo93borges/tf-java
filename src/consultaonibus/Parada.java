@@ -1,30 +1,41 @@
 package consultaonibus;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import consultaonibus.reader.Reader;
 
 public class Parada {
 	
-	private String id;
+	private int id;
 	private String codigo;
 	private String longitude;
 	private String latitude;
 	private String terminal;
+	private ArrayList<Linha> linhas;
 	
-	public Parada(String id, String codigo, String longitude, String latitude, String terminal) {
+	public Parada(int id, String codigo, String longitude, String latitude, String terminal, ArrayList<Linha> linhas) {
 		this.id = id;
 		this.codigo = codigo;
 		this.longitude = longitude;
 		this.latitude = latitude;
 		this.terminal = terminal;
+		this.linhas = linhas;
 	}
 
-	public String getId() {
+	public ArrayList<Linha> getLinhas() {
+		return linhas;
+	}
+
+	public void setLinhas(ArrayList<Linha> linhas) {
+		this.linhas = linhas;
+	}
+
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -73,7 +84,7 @@ public class Parada {
 		r.writeCsv("paradas.csv", conteudo, ";");
 	}
 	
-	public void relacionaLinhaParada(String idLinha, String idParada){
+	public void relacionaLinhaParada(int idLinha, int idParada){
 		Reader r = new Reader();
 		ArrayList conteudo = new ArrayList();
 		
@@ -89,7 +100,7 @@ public class Parada {
 		objetos.remove(0);//remover headers
 		for(int i=0; i < objetos.size(); i ++){
 			for(int j=0; j < objetos.size()-1; j++){
-				if(Integer.parseInt(objetos.get(j).getId()) > Integer.parseInt(objetos.get(j+1).getId())){
+				if(objetos.get(j).getId() > objetos.get(j+1).getId()){
 					aux = objetos.get(j);
 					objetos.set(j, objetos.get(j+1));
 					objetos.set(j+1, aux);

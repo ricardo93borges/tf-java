@@ -1,23 +1,32 @@
 package consultonibus.gui;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-import consultaonibus.Util;
-import consultaonibus.consultas.Consultas;
-import consultaonibus.Parada;
-import consultaonibus.Linha;
-import org.jxmapviewer.viewer.GeoPosition;
+import javax.swing.JFrame;
 
-import javax.swing.*;
+import consultaonibus.Linha;
+import consultaonibus.Parada;
+import consultaonibus.consultas.Consultas;
 
 public class JanelaLinhas extends JFrame{
 	private javax.swing.JTable tabelaLinhasOnibus;
     private javax.swing.JTable tabelaLinhasLotacao;
 	private GerenciadorMapa gerenciador;
+	private ArrayList<Parada> paradas;
+	private ArrayList<Linha> linhas;
 	
-	public JanelaLinhas(GerenciadorMapa gerenciador){
+	public JanelaLinhas(GerenciadorMapa gerenciador, ArrayList<Parada> paradas){
+		this.paradas = paradas;
+		
+		this.linhas = new ArrayList<Linha>();
+		for(int i=0; i<gerenciador.getParadas().size(); i++){
+			for(int j=0; j < gerenciador.getParadas().get(i).getLinhas().size(); j++){
+				this.linhas.add(gerenciador.getParadas().get(i).getLinhas().get(j));
+			}
+		}
+		
 		this.gerenciador = gerenciador;
 		this.gerenciador.resetWaypoints();
 		this.setTitle("Linhas");
@@ -59,7 +68,7 @@ public class JanelaLinhas extends JFrame{
     	painel = new javax.swing.JPanel(); 
     	//painel.setLayout(new BorderLayout());
     	painel.setLayout(new javax.swing.BoxLayout(painel, javax.swing.BoxLayout.PAGE_AXIS));
-    	this.tabelaLinhasOnibus = new javax.swing.JTable(new TableLinhasModel("onibus")); 
+    	this.tabelaLinhasOnibus = new javax.swing.JTable(new TableLinhasModel("onibus", this.linhas)); 
     	
     	barraRolagem = new javax.swing.JScrollPane(tabelaLinhasOnibus); 
     	painel.add(barraRolagem); 
@@ -91,7 +100,7 @@ public class JanelaLinhas extends JFrame{
     	painel = new javax.swing.JPanel(); 
     	//painel.setLayout(new BorderLayout());
     	painel.setLayout(new javax.swing.BoxLayout(painel, javax.swing.BoxLayout.PAGE_AXIS));
-    	this.tabelaLinhasLotacao = new javax.swing.JTable(new TableLinhasModel("lotacao")); 
+    	this.tabelaLinhasLotacao = new javax.swing.JTable(new TableLinhasModel("lotacao", this.linhas)); 
     	
     	barraRolagem = new javax.swing.JScrollPane(tabelaLinhasLotacao); 
     	painel.add(barraRolagem); 
@@ -105,25 +114,25 @@ public class JanelaLinhas extends JFrame{
      * Metodo para consultar as paradas de uma linha
      */
     private void consultarParadas(java.awt.event.ActionEvent evt, String tipo){
-    	String idLinha = "";
+    	int idLinha = 0;
     	if(tipo == "onibus"){
     		if(this.tabelaLinhasOnibus.getSelectedRow() < 0){
     	    	javax.swing.JOptionPane.showMessageDialog(null, "Selecione uma linha.");
     		}else{
 		    	int row = this.tabelaLinhasOnibus.getSelectedRow();
-		    	idLinha = (String)this.tabelaLinhasOnibus.getValueAt(row, 0);
+		    	idLinha = Integer.parseInt((String)this.tabelaLinhasOnibus.getValueAt(row, 0));
     		}
     	}else if(tipo == "lotacao"){
     		if(this.tabelaLinhasLotacao.getSelectedRow() < 0){
     	    	javax.swing.JOptionPane.showMessageDialog(null, "Selecione uma linha.");	
     		}else{
     			int row = this.tabelaLinhasLotacao.getSelectedRow();
-		    	idLinha = (String)this.tabelaLinhasLotacao.getValueAt(row, 0);
+		    	idLinha = Integer.parseInt((String)this.tabelaLinhasLotacao.getValueAt(row, 0));
     		}
     	}
     	
     	Consultas c = new Consultas();
-    	ArrayList<Parada> paradas = c.getParadasByLinha(idLinha);
+    	ArrayList<Parada> paradas = c.getParadasByLinha(idLinha, this.paradas);
     	if(paradas.size() == 0){
     		javax.swing.JOptionPane.showMessageDialog(null, "Não foi encontrado paradas para esta linha.");
     	}else{
@@ -131,7 +140,7 @@ public class JanelaLinhas extends JFrame{
 
 			for(int i=0; i< paradas.size(); i++){
 				for(MyWaypoint wp : gerenciador.getPontos()){
-					if(paradas.get(i).getId().equals(wp.getParada().getId())){
+					if(paradas.get(i).getId() == wp.getParada().getId()){
 						wp.setColor(Color.GREEN);
 					}
 				}
