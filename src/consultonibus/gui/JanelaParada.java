@@ -35,7 +35,7 @@ public class JanelaParada extends JFrame{
 
 		System.out.println("pda ID: "+this.parada.getId());
 		Consultas c = new Consultas();
-		ArrayList<Linha> linhas = c.getLinhasByParada(String.valueOf(this.parada.getId()));
+		ArrayList<Linha> linhas = parada.getLinhas();
 		String[][] data = new String[linhas.size()][5];
 
 		for(int i = 1; i < linhas.size(); i++){

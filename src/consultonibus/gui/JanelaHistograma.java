@@ -51,39 +51,18 @@ public class JanelaHistograma extends JFrame{
 		this.setVisible(true);
 	}
 
-	public ArrayList<Parada> getParadasByLinha(int linhaId, ArrayList<ParadaLinha> paradasLinhas){
-		ArrayList<Parada> retorno = new ArrayList<Parada>();
-
-		for(int i=0; i < paradasLinhas.size(); i++){
-			ParadaLinha pl = paradasLinhas.get(i);
-
-			if(pl.getIdLinha().equals(String.valueOf(linhaId))){
-				for(int j=0; j < this.paradas.size(); j++){
-					Parada p = this.paradas.get(j);
-					if(pl.getIdParada().equals(String.valueOf(p.getId()))){
-						retorno.add(p);
-					}
-				}
-			}
-		}
-
-		return retorno;
-	}
-
 	public Map<Double, Double> getDados(){
 		Consultas c = new Consultas();
 		Map<Integer, Integer> linhasParadas = new HashMap<Integer, Integer>();
 		Map<Double, Double> dados = new HashMap<Double, Double>(); 
 		
-		System.out.println("**********");
 		ArrayList<Linha> linhas = c.getLinhas();
-		ArrayList<ParadaLinha> paradasLinhas = c.getParadaLinha();
-		//ArrayList<Parada> paradas = c.getParadas();
-		
+
 		System.out.println("loop 1");
 		for(int i=1; i<linhas.size(); i++){
-			ArrayList<Parada> linhaParadas = this.getParadasByLinha(linhas.get(i).getId(), paradasLinhas);
-			linhasParadas.put(linhas.get(i).getId(), linhaParadas.size());
+			if(linhas.get(i).getParadas().size() > 0){
+				linhasParadas.put(linhas.get(i).getId(), linhas.get(i).getParadas().size());
+			}
 		}
 		
 		System.out.println("loop 2");
@@ -98,14 +77,14 @@ public class JanelaHistograma extends JFrame{
 	        }
 	        //it.remove(); 
 	    }
-		
+		/*
 	    System.out.println("loop 3");
 	    it = linhasParadas.entrySet().iterator();
 	    while (it.hasNext()) {
 	        Map.Entry pair = (Map.Entry)it.next();
 	        System.out.println(pair.getKey() + " = " + pair.getValue());
 	        //it.remove(); 
-	    }
+	    }*/
 	    
 	    return dados;
 	}

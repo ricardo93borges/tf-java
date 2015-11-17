@@ -18,24 +18,7 @@ public class Teste {
 		write();
 	}
 	
-	public static void getLinhasByParada(String parada){
-		Consultas c = new Consultas();
-		ArrayList<Linha> linhas  = c.getLinhasByParada(parada);
-		
-		for(int i=0; i < linhas.size(); i++){
-			System.out.println("\n Linha:");
-			System.out.println("ID: "+linhas.get(i).toString());
-		}
-	}
-	
-	public static void getParadasByLinha(String parada){
-		Consultas c = new Consultas();
-		ArrayList<Parada> paradas  = c.getParadasByLinha(parada);
-		for(int i=0; i < paradas.size(); i++){
-			System.out.println("\n Parada:");
-			System.out.println(paradas.get(i).toString());
-		}
-	}
+
 	
 	public static void write(){
 		ArrayList<String> conteudo = new ArrayList<String>();
